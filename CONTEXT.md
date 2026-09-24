@@ -13,7 +13,7 @@
 - **Frontend Stack:** 
   - **Framework/Library:** React 19, Vite
   - **State Management / Data Fetching:** TanStack React Query v5
-  - **Styling solution:** Bootstrap 5, Bootstrap Icons
+  - **Styling solution:** Tailwind CSS v4, Lucide React
   - **HTTP Client:** Axios
   - **Forms:** React Hook Form
   - **Cổng dev server:** Mặc định của Vite (thường là 5173).

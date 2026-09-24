@@ -10,16 +10,10 @@
 \setlength{\parindent}{1cm} % Lùi đầu dòng 1cm
 \setlength{\parskip}{6pt}   % Khoảng cách giữa các đoạn văn
 
-% Hỗ trợ Font tiếng Việt đa nền tảng (XeLaTeX hoặc pdfLaTeX)
-\usepackage{iftex}
-\ifXeTeX
-  \usepackage{fontspec}
-  \setmainfont{Times New Roman}
-\else
-  \usepackage[utf8]{inputenc}
-  \usepackage[T5]{fontenc}
-  \usepackage{mathptmx} % Times simulation cho pdfLaTeX
-\fi
+% Hỗ trợ Font tiếng Việt chuẩn Unicode cho XeLaTeX
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+
 
 % ==============================================================================
 % CÁC GÓI LỆNH ĐỒ HỌA, BẢNG BIỂU & CODE LISTING
@@ -157,10 +151,14 @@
 \include{chapters/01_chapter1_overview}
 \include{chapters/02_chapter2_analysis_design}
 \include{chapters/03_chapter3_implementation}
+
+% ------------------------------------------------------------------------------
+% 3. PHẦN KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN
+% ------------------------------------------------------------------------------
 \include{chapters/04_backmatter}
 
 % ------------------------------------------------------------------------------
-% 3. TÀI LIỆU THAM KHẢO
+% 4. TÀI LIỆU THAM KHẢO
 % ------------------------------------------------------------------------------
 \cleardoublepage
 \addcontentsline{toc}{chapter}{TÀI LIỆU THAM KHẢO}

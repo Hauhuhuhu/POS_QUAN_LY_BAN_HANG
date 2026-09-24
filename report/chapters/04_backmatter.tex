@@ -1,21 +1,24 @@
 % ==============================================================================
-% CHƯƠNG 4: KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN
+% PHẦN KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN
 % ==============================================================================
-\chapter{KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN}
-\label{chap:ket_luan}
+\cleardoublepage
+\chapter*{KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN}
+\label{sec:ket_luan}
+\addcontentsline{toc}{chapter}{KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN}
 
-\section{Đánh giá những kết quả đạt được}
+\section*{1. Đánh giá những kết quả đạt được}
 \label{sec:ket_qua_dat_duoc}
+\addcontentsline{toc}{section}{1. Đánh giá những kết quả đạt được}
 
 Sau thời gian nghiêm túc nghiên cứu lý thuyết, khảo sát nghiệp vụ thực tế và triển khai lập trình, đề tài \textbf{''Xây dựng website POS Quản lý bán hàng trên nền tảng Spring Boot và ReactJS''} đã hoàn thành xuất sắc toàn bộ các mục tiêu đặt ra ban đầu, đáp ứng đầy đủ các yêu cầu khắt khe của môn học \textit{Phát triển phần mềm mã nguồn mở} tại Trường Đại học Giao thông Vận tải.
 
 Cụ thể, các kết quả chính mà nhóm đã đạt được bao gồm:
 
-\subsection{Về mặt nghiên cứu lý thuyết và phương pháp luận}
+\subsection*{a. Về mặt nghiên cứu lý thuyết và phương pháp luận}
 \begin{itemize}[leftmargin=1.5cm]
     \item \textbf{Làm chủ kiến trúc phân tán hiện đại:} Nắm vững và vận dụng thành thạo mô hình kiến trúc phân tầng (Multi-tier Architecture) tách biệt giữa giao diện máy khách (React 19 SPA) và máy chủ dịch vụ (Spring Boot 4.x RESTful API), kết hợp hạ tầng container hóa Docker và Nginx Reverse Proxy.
-    \item \textbf{Chuẩn hóa phân tích thiết kế hệ thống:} Xây dựng hệ thống biểu đồ phân tích bài bản từ Biểu đồ phân rã chức năng (BFD), mô hình Use Case tổng quát đến 6 bảng đặc tả ca sử dụng chi tiết chuẩn học thuật; mô hình hóa quy trình vận hành qua các biểu đồ Hoạt động, Tuần tự, Biểu đồ lớp và Biểu đồ triển khai phần cứng.
-    \item \textbf{Thiết kế cơ sở dữ liệu quan hệ chuẩn mực:} Xây dựng mô hình quan hệ thực thể (ERD) đạt chuẩn dạng chuẩn 3 (3NF) với 13 bảng dữ liệu thực tế, giải quyết triệt để quan hệ nhiều - nhiều giữa sản phẩm và nhóm tùy chọn thông qua bảng trung gian, áp dụng công cụ Flyway Migration quản lý phiên bản schema nghiêm ngặt thay vì cấu hình tự sinh bảng rủi ro.
+    \item \textbf{Chuẩn hóa phân tích thiết kế hệ thống:} Xây dựng hệ thống biểu đồ phân tích bài bản từ Biểu đồ phân rã chức năng (BFD), mô hình Use Case tổng quát đến 7 bảng đặc tả ca sử dụng chi tiết (từ UC01 đến UC07) chuẩn học thuật; mô hình hóa quy trình vận hành qua các biểu đồ Hoạt động, Tuần tự, Biểu đồ lớp, Biểu đồ thành phần và Biểu đồ triển khai phần cứng.
+    \item \textbf{Thiết kế cơ sở dữ liệu quan hệ chuẩn mực:} Xây dựng mô hình quan hệ thực thể (ERD) đạt chuẩn dạng chuẩn 3 (3NF) với 14 bảng dữ liệu thực tế (8 bảng nghiệp vụ cơ bản và 6 bảng mở rộng), giải quyết triệt để quan hệ nhiều - nhiều giữa sản phẩm và nhóm tùy chọn thông qua bảng trung gian, áp dụng công cụ Flyway Migration quản lý phiên bản schema nghiêm ngặt thay vì cấu hình tự sinh bảng rủi ro.
     \item \textbf{Thiết lập các chuẩn an ninh và kiến trúc cốt lõi (ADR):}
     \begin{itemize}
         \item \textit{Bảo mật hai lớp token (ADR-0007):} Phối hợp Access Token trong RAM và Refresh Token trong Cookie HttpOnly với cơ chế Token Rotation và Token Family ngăn chặn hoàn toàn nguy cơ rò rỉ phiên và tấn công Replay Attack.
@@ -25,9 +28,9 @@ Cụ thể, các kết quả chính mà nhóm đã đạt được bao gồm:
     \end{itemize}
 \end{itemize}
 
-\subsection{Về mặt thực nghiệm và sản phẩm ứng dụng}
+\subsection*{b. Về mặt thực nghiệm và sản phẩm ứng dụng}
 \begin{itemize}[leftmargin=1.5cm]
-    \item \textbf{Hệ thống giao diện POS trực quan, mượt mà:} Xây dựng hoàn chỉnh 11 màn hình giao diện người dùng trên nền tảng React 19 và Tailwind CSS v4, tối ưu hóa cho màn hình cảm ứng tại quầy; thời gian phản hồi thao tác thêm món và cập nhật giỏ hàng dưới $50$ mili-giây.
+    \item \textbf{Hệ thống giao diện POS trực quan, mượt mà:} Xây dựng hoàn chỉnh 14 màn hình giao diện người dùng chính (được minh họa qua 15 hình chụp chi tiết trong báo cáo) trên nền tảng React 19 và Tailwind CSS v4, tối ưu hóa cho màn hình cảm ứng tại quầy; thời gian phản hồi thao tác thêm món và cập nhật giỏ hàng dưới $50$ mili-giây.
     \item \textbf{Tích hợp thanh toán trực tuyến VietQR động PayOS:} Kết nối thành công cổng PayOS qua bộ SDK Java chính thức, sinh mã VietQR động theo chuẩn NAPAS có khóa số tiền và nội dung đơn; xử lý Webhook tự động cập nhật trạng thái đơn hàng kèm xác thực chữ ký điện tử HMAC-SHA256 Checksum; hỗ trợ quy trình chuyển đổi sang tiền mặt linh hoạt khi gặp sự cố mạng.
     \item \textbf{Tích hợp lưu trữ đám mây AWS S3:} Lưu trữ hình ảnh sản phẩm và danh mục phân tán trên hạ tầng Amazon S3 thông qua AWS SDK v2, tự động dọn dẹp tệp ảnh cũ khi cập nhật dữ liệu.
     \item \textbf{Mẫu hóa đơn in nhiệt 80mm chuẩn hóa:} Hỗ trợ in trực tiếp từ trình duyệt qua lệnh \texttt{window.print()} với định dạng CSS \texttt{@media print} sắc nét.
@@ -35,8 +38,9 @@ Cụ thể, các kết quả chính mà nhóm đã đạt được bao gồm:
 \end{itemize}
 
 % ==============================================================================
-\section{Những hạn chế còn tồn tại}
+\section*{2. Những hạn chế còn tồn tại}
 \label{sec:han_che}
+\addcontentsline{toc}{section}{2. Những hạn chế còn tồn tại}
 
 Mặc dù hệ thống đã đáp ứng đầy đủ các yêu cầu cốt lõi và vận hành ổn định trong môi trường thực nghiệm, song do giới hạn về mặt thời gian và phạm vi của một đề tài bài tập lớn, ứng dụng vẫn còn một số điểm hạn chế nhất định:
 \begin{enumerate}[label=\arabic*., leftmargin=1.5cm]
@@ -46,8 +50,9 @@ Mặc dù hệ thống đã đáp ứng đầy đủ các yêu cầu cốt lõi 
 \end{enumerate}
 
 % ==============================================================================
-\section{Hướng phát triển trong tương lai}
+\section*{3. Hướng phát triển trong tương lai}
 \label{sec:huong_phat_trien}
+\addcontentsline{toc}{section}{3. Hướng phát triển trong tương lai}
 
 Để phát triển hệ thống POS từ quy mô một đồ án môn học trở thành một giải pháp phần mềm thương mại hoàn chỉnh có khả năng cạnh tranh cao trên thị trường, nhóm định hướng các giai đoạn nâng cấp tiếp theo:
 \begin{enumerate}[label=\arabic*., leftmargin=1.5cm]
@@ -63,5 +68,6 @@ Mặc dù hệ thống đã đáp ứng đầy đủ các yêu cầu cốt lõi 
 \end{enumerate}
 
 % ==============================================================================
-\section{Lời kết}
+\section*{4. Lời kết}
+\addcontentsline{toc}{section}{4. Lời kết}
 Quá trình thực hiện đề tài \textbf{''Xây dựng website POS Quản lý bán hàng trên nền tảng Spring Boot và ReactJS''} không chỉ giúp nhóm sinh viên củng cố vững chắc các kiến thức lý thuyết đã học về công nghệ phần mềm, lập trình hướng đối tượng, phân tích thiết kế hệ thống và cơ sở dữ liệu, mà còn mang lại những kinh nghiệm thực tiễn vô cùng quý báu về việc áp dụng các công nghệ mã nguồn mở tiên tiến nhất vào giải quyết một bài toán nghiệp vụ kinh doanh thực tế. Hệ thống đã chứng minh được tính khả thi cao, sự ổn định trong vận hành và tiềm năng mở rộng to lớn để trở thành một sản phẩm phần mềm thương mại hoàn chỉnh trong tương lai.
