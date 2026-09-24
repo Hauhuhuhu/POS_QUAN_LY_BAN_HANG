@@ -36,10 +36,7 @@ where docker >nul 2>nul
 if %ERRORLEVEL% EQU 0 (
     echo [THONG TIN] Khong tim thay xelatex local, nhung tim thay Docker.
     echo Dang khoi chay bien dich qua TeX Live Docker container...
-    docker run --rm -v "%cd%":/workdir -w /workdir ghcr.io/xu-cheng/latex xelatex main.tex
-    docker run --rm -v "%cd%":/workdir -w /workdir ghcr.io/xu-cheng/latex bibtex main
-    docker run --rm -v "%cd%":/workdir -w /workdir ghcr.io/xu-cheng/latex xelatex main.tex
-    docker run --rm -v "%cd%":/workdir -w /workdir ghcr.io/xu-cheng/latex xelatex main.tex
+    docker run --rm -v "%cd%":/workdir -w /workdir ghcr.io/xu-cheng/latex sh -c "xelatex -interaction=nonstopmode main.tex && bibtex main && xelatex -interaction=nonstopmode main.tex && xelatex -interaction=nonstopmode main.tex"
     if exist main.pdf (
         echo [THANH CONG] File bao cao PDF da duoc tao: report\main.pdf
         goto end

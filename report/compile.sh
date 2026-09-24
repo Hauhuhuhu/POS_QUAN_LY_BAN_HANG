@@ -17,10 +17,7 @@ if command -v xelatex >/dev/null 2>&1; then
     echo "=== BIÊN DỊCH HOÀN TẤT: main.pdf ==="
 elif command -v docker >/dev/null 2>&1; then
     echo "Sử dụng Docker container TeX Live..."
-    docker run --rm -v "$(pwd)":/workdir -w /workdir ghcr.io/xu-cheng/latex xelatex main.tex
-    docker run --rm -v "$(pwd)":/workdir -w /workdir ghcr.io/xu-cheng/latex bibtex main || true
-    docker run --rm -v "$(pwd)":/workdir -w /workdir ghcr.io/xu-cheng/latex xelatex main.tex
-    docker run --rm -v "$(pwd)":/workdir -w /workdir ghcr.io/xu-cheng/latex xelatex main.tex
+    docker run --rm -v "$(pwd)":/workdir -w /workdir ghcr.io/xu-cheng/latex sh -c "xelatex -interaction=nonstopmode main.tex && bibtex main || true && xelatex -interaction=nonstopmode main.tex && xelatex -interaction=nonstopmode main.tex"
     echo "=== BIÊN DỊCH HOÀN TẤT QUA DOCKER: main.pdf ==="
 else
     echo "LỖI: Chưa cài đặt XeLaTeX hoặc Docker."

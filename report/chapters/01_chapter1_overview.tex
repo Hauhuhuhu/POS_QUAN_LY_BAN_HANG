@@ -180,7 +180,7 @@ Bảo mật là một trong những thành tố quan trọng nhất của một 
 Hệ thống thiết lập 2 vai trò quyền hạn riêng biệt:
 \begin{itemize}[leftmargin=1.5cm]
     \item \textbf{Vai trò Quản trị viên (\texttt{ROLE\_ADMIN}):} Có toàn quyền truy cập các API quản trị bắt đầu bằng tiền tố \texttt{/api/v1.0/admin/**}, bao gồm: đăng ký/sửa/xóa tài khoản nhân viên, điều chỉnh danh mục hàng hóa, tạo mã khuyến mãi, nhập xuất kho thủ công và kiểm kê cân bằng kho.
-    \item \textbf{Vai trò Nhân viên thu ngân (\texttt{ROLE\_USER}):} Chỉ được cấp quyền thực hiện các thao tác phục vụ trực tiếp việc bán hàng tại quầy: xem sản phẩm, tạo hóa đơn bán lẻ, đổi phương thức thanh toán sang tiền mặt, in hóa đơn, tra cứu khách hàng và chỉ được xem nhật ký hoạt động do chính tài khoản của mình tạo ra.
+    \item \textbf{Vai trò Nhân viên thu ngân (\texttt{ROLE\_STAFF}):} Chỉ được cấp quyền thực hiện các thao tác phục vụ trực tiếp việc bán hàng tại quầy: xem sản phẩm, tạo hóa đơn bán lẻ, đổi phương thức thanh toán sang tiền mặt, in hóa đơn, tra cứu khách hàng và chỉ được xem nhật ký hoạt động do chính tài khoản của mình tạo ra.
 \end{itemize}
 
 \subsubsection{Kiến trúc bảo mật hai lớp Token chống Replay Attack (ADR-0007)}

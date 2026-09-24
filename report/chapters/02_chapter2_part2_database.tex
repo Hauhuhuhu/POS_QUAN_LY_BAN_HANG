@@ -33,7 +33,7 @@ Sơ đồ mô hình quan hệ thực thể (ERD) toàn diện của hệ thống
 \fbox{
     \parbox{0.95\textwidth}{
         \centering \vspace{2mm}
-        {\fontsize{12pt}{14pt}\selectfont \textbf{SƠ ĐỒ QUAN HỆ THỰC THỂ CƠ SỞ DỮ LIỆU (ERD - 13 BẢNG)}}\\[3mm]
+        {\fontsize{12pt}{14pt}\selectfont \textbf{SƠ ĐỒ QUAN HỆ THỰC THỂ CƠ SỞ DỮ LIỆU (ERD - 14 BẢNG)}}\\[3mm]
         \begin{tabularx}{\textwidth}{ccc}
             \fbox{\parbox{3.5cm}{\centering \textbf{tbl\_category}\\
             \underline{id} (PK)\\
@@ -106,8 +106,8 @@ Sơ đồ mô hình quan hệ thực thể (ERD) toàn diện của hệ thống
 \label{fig:erd_diagram}
 \end{figure}
 
-\subsection{Từ điển dữ liệu chi tiết (Data Dictionary - 13 bảng)}
-Dưới đây là đặc tả chi tiết toàn bộ các trường dữ liệu, kiểu dữ liệu MySQL, ràng buộc toàn vẹn và ý nghĩa nghiệp vụ của 13 bảng thực tế trong cơ sở dữ liệu:
+\subsection{Từ điển dữ liệu chi tiết (Data Dictionary - 14 bảng)}
+Dưới đây là đặc tả chi tiết toàn bộ các trường dữ liệu, kiểu dữ liệu MySQL, ràng buộc toàn vẹn và ý nghĩa nghiệp vụ của 14 bảng thực tế trong cơ sở dữ liệu (bao gồm 8 bảng nghiệp vụ cơ bản và 6 bảng mở rộng nâng cao):
 
 % ------------------------------------------------------------------------------
 % 1. BẢNG TBL_USERS
@@ -127,7 +127,7 @@ Lưu trữ thông tin tài khoản nhân viên thu ngân và quản trị viên 
 \texttt{userId} & \texttt{VARCHAR(255)} & UK & Có & Không & Mã định danh công khai (UUID). \\ \hline
 \texttt{email} & \texttt{VARCHAR(255)} & UK & Có & Không & Email đăng nhập duy nhất. \\ \hline
 \texttt{password} & \texttt{VARCHAR(255)} & - & Có & Không & Mật khẩu đã băm bằng BCrypt. \\ \hline
-\texttt{role} & \texttt{VARCHAR(50)} & - & Có & Không & Vai trò: \texttt{ROLE\_ADMIN} hoặc \texttt{ROLE\_USER}. \\ \hline
+\texttt{role} & \texttt{VARCHAR(50)} & - & Có & Không & Vai trò: \texttt{ROLE\_ADMIN} hoặc \texttt{ROLE\_STAFF}. \\ \hline
 \texttt{name} & \texttt{VARCHAR(255)} & - & Có & Không & Họ và tên đầy đủ của nhân viên. \\ \hline
 \texttt{createdAt} & \texttt{DATETIME(6)} & - & Có & CURRENT & Thời điểm khởi tạo tài khoản. \\ \hline
 \texttt{updatedAt} & \texttt{DATETIME(6)} & - & Không & NULL & Thời điểm cập nhật gần nhất. \\ \hline

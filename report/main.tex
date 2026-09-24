@@ -154,27 +154,17 @@
 % ------------------------------------------------------------------------------
 % 2. CÁC CHƯƠNG NỘI DUNG CHÍNH
 % ------------------------------------------------------------------------------
-\ifdefined\IncludeAllChapters
-  \include{chapters/01_chapter1_overview}
-  \include{chapters/02_chapter2_analysis_design}
-  \include{chapters/03_chapter3_implementation}
-  \include{chapters/04_backmatter}
-\else
-  % Nếu các file chương chưa tạo hoặc đang kiểm thử từng ticket
-  \IfFileExists{chapters/01_chapter1_overview.tex}{\include{chapters/01_chapter1_overview}}{}
-  \IfFileExists{chapters/02_chapter2_analysis_design.tex}{\include{chapters/02_chapter2_analysis_design}}{}
-  \IfFileExists{chapters/03_chapter3_implementation.tex}{\include{chapters/03_chapter3_implementation}}{}
-  \IfFileExists{chapters/04_backmatter.tex}{\include{chapters/04_backmatter}}{}
-\fi
+\include{chapters/01_chapter1_overview}
+\include{chapters/02_chapter2_analysis_design}
+\include{chapters/03_chapter3_implementation}
+\include{chapters/04_backmatter}
 
 % ------------------------------------------------------------------------------
 % 3. TÀI LIỆU THAM KHẢO
 % ------------------------------------------------------------------------------
-\IfFileExists{references.bib}{
-  \cleardoublepage
-  \addcontentsline{toc}{chapter}{TÀI LIỆU THAM KHẢO}
-  \bibliographystyle{plain}
-  \bibliography{references}
-}{}
+\cleardoublepage
+\addcontentsline{toc}{chapter}{TÀI LIỆU THAM KHẢO}
+\bibliographystyle{plain}
+\bibliography{references}
 
 \end{document}

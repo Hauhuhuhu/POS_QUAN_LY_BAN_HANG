@@ -61,7 +61,7 @@ VITE_API_BASE_URL=http://localhost:8080/api/v1.0
 \end{lstlisting}
 
 \subsection{Kịch bản khởi tạo và di chuyển cơ sở dữ liệu với Flyway}
-Thay vì sử dụng cơ chế tự sinh bảng nguy hiểm của Hibernate, dự án áp dụng kịch bản di chuyển cấu trúc bảng thông qua công cụ Flyway Migration (\texttt{src/main/resources/db/migration/V2\_\_.sql}). Kịch bản này thực thi:
+Thay vì sử dụng cơ chế tự sinh bảng nguy hiểm của Hibernate, dự án áp dụng kịch bản di chuyển cấu trúc bảng thông qua công cụ Flyway Migration (\texttt{src/main/resources/db/migration/V1\_\_init\_schema.sql}). Kịch bản này thực thi:
 \begin{enumerate}[label=\arabic*., leftmargin=1.5cm]
     \item Khởi tạo các bảng kiểm toán lịch sử thay đổi (Audit Tables) của Hibernate Envers: \texttt{revinfo}, \texttt{revchanges}.
     \item Chuẩn hóa kiểu dữ liệu số tiền sang \texttt{DECIMAL(19,2)} có độ chính xác tuyệt đối, tránh hiện tượng sai số làm tròn số dư tài chính.
@@ -75,6 +75,28 @@ Thay vì sử dụng cơ chế tự sinh bảng nguy hiểm của Hibernate, d�
 
 Phân hệ Thu ngân được thiết kế tối ưu cho các thao tác cảm ứng nhanh tại quầy bán lẻ, cho phép nhân viên phục vụ khách hàng với số lần chạm tối thiểu.
 
+\subsection{Giao diện Đăng nhập và Xác thực người dùng (Auth Login)}
+Hệ thống yêu cầu tất cả người dùng (Quản trị viên và Nhân viên thu ngân) phải xác thực danh tính trước khi truy cập bất kỳ tính năng nghiệp vụ nào (Hình \ref{fig:ui_login}):
+\begin{itemize}[leftmargin=1.5cm]
+    \item Biểu mẫu đăng nhập bảo mật bằng Email và Mật khẩu, tích hợp kiểm tra tính hợp lệ dữ liệu đầu vào phía Client (Form Validation).
+    \item Khi đăng nhập thành công, hệ thống tiếp nhận Access Token lưu trong bộ nhớ RAM và nhận Refresh Token an toàn qua cookie HttpOnly theo kiến trúc ADR-0007.
+    \item Tự động điều hướng người dùng tới giao diện bán hàng (\texttt{/explore}) hoặc bảng điều khiển quản trị (\texttt{/dashboard}) tùy theo vai trò quyền hạn (\texttt{ROLE\_ADMIN} hoặc \texttt{ROLE\_STAFF}).
+\end{itemize}
+
+\begin{figure}[htbp]
+\centering
+\IfFileExists{images/ui_login.png}{
+    \includegraphics[width=0.75\textwidth]{images/ui_login.png}
+}{
+    \fbox{\parbox{0.9\textwidth}{\centering \vspace{15mm}
+    \textbf{[HÌNH 3.1: GIAO DIỆN ĐĂNG NHẬP HỆ THỐNG (LOGIN VIEW)]}\\
+    \textit{(Vị trí ảnh chụp: report/images/ui\_login.png)}\\
+    \vspace{15mm}}}
+}
+\caption{Giao diện Đăng nhập và Xác thực người dùng (Auth Login)}
+\label{fig:ui_login}
+\end{figure}
+
 \subsection{Màn hình Bán hàng nhanh (POS Checkout View)}
 Màn hình Bán hàng nhanh (đường dẫn \texttt{/explore}) là giao diện làm việc chính của nhân viên thu ngân trong suốt ca bán (Hình \ref{fig:ui_pos_explore}):
 \begin{itemize}[leftmargin=1.5cm]
@@ -85,10 +107,14 @@ Màn hình Bán hàng nhanh (đường dẫn \texttt{/explore}) là giao diện 
 
 \begin{figure}[htbp]
 \centering
-\fbox{\parbox{0.9\textwidth}{\centering \vspace{15mm}
-\textbf{[HÌNH 3.1: GIAO DIỆN MÀN HÌNH BÁN HÀNG NHANH POS (EXPLORE VIEW)]}\\
-\textit{(Vị trí ảnh chụp: report/images/ui\_pos\_explore.png)}\\
-\vspace{15mm}}}
+\IfFileExists{images/ui_pos_explore.png}{
+    \includegraphics[width=0.92\textwidth]{images/ui_pos_explore.png}
+}{
+    \fbox{\parbox{0.9\textwidth}{\centering \vspace{15mm}
+    \textbf{[HÌNH 3.2: GIAO DIỆN MÀN HÌNH BÁN HÀNG NHANH POS (EXPLORE VIEW)]}\\
+    \textit{(Vị trí ảnh chụp: report/images/ui\_pos\_explore.png)}\\
+    \vspace{15mm}}}
+}
 \caption{Giao diện Màn hình Bán hàng nhanh tại quầy POS}
 \label{fig:ui_pos_explore}
 \end{figure}
@@ -103,10 +129,14 @@ Khi thu ngân nhấp chọn một mặt hàng có cấu hình phân loại phứ
 
 \begin{figure}[htbp]
 \centering
-\fbox{\parbox{0.9\textwidth}{\centering \vspace{12mm}
-\textbf{[HÌNH 3.2: POPUP TÙY CHỌN BIẾN THỂ SKU VÀ NHÓM TOPPING MODIFIERS]}\\
-\textit{(Vị trí ảnh chụp: report/images/ui\_pos\_modal.png)}\\
-\vspace{12mm}}}
+\IfFileExists{images/ui_pos_modal.png}{
+    \includegraphics[width=0.88\textwidth]{images/ui_pos_modal.png}
+}{
+    \fbox{\parbox{0.9\textwidth}{\centering \vspace{12mm}
+    \textbf{[HÌNH 3.3: POPUP TÙY CHỌN BIẾN THỂ SKU VÀ NHÓM TOPPING MODIFIERS]}\\
+    \textit{(Vị trí ảnh chụp: report/images/ui\_pos\_modal.png)}\\
+    \vspace{12mm}}}
+}
 \caption{Giao diện Popup tùy chọn biến thể SKU và Modifiers}
 \label{fig:ui_pos_modal}
 \end{figure}
@@ -133,10 +163,14 @@ Thu ngân có thể lựa chọn 1 trong 2 phương thức thanh toán linh ho�
 
 \begin{figure}[htbp]
 \centering
-\fbox{\parbox{0.9\textwidth}{\centering \vspace{15mm}
-\textbf{[HÌNH 3.3: CỬA SỔ QUÉT MÃ THANH TOÁN VIETQR PAYOS THỜI GIAN THỰC]}\\
-\textit{(Vị trí ảnh chụp: report/images/ui\_payment\_qr.png)}\\
-\vspace{15mm}}}
+\IfFileExists{images/ui_payment_qr.png}{
+    \includegraphics[width=0.88\textwidth]{images/ui_payment_qr.png}
+}{
+    \fbox{\parbox{0.9\textwidth}{\centering \vspace{15mm}
+    \textbf{[HÌNH 3.4: CỬA SỔ QUÉT MÃ THANH TOÁN VIETQR PAYOS THỜI GIAN THỰC]}\\
+    \textit{(Vị trí ảnh chụp: report/images/ui\_payment\_qr.png)}\\
+    \vspace{15mm}}}
+}
 \caption{Giao diện Quét mã thanh toán VietQR động tích hợp PayOS}
 \label{fig:ui_payment_qr}
 \end{figure}
@@ -152,10 +186,14 @@ Cửa sổ \texttt{ReceiptPopup} (Hình \ref{fig:ui_receipt}) được thiết k
 
 \begin{figure}[htbp]
 \centering
-\fbox{\parbox{0.9\textwidth}{\centering \vspace{15mm}
-\textbf{[HÌNH 3.4: MẪU HÓA ĐƠN BÁN LẺ IN NHIỆT 80MM (THERMAL RECEIPT)]}\\
-\textit{(Vị trí ảnh chụp: report/images/ui\_receipt.png)}\\
-\vspace{15mm}}}
+\IfFileExists{images/ui_receipt.png}{
+    \includegraphics[width=0.85\textwidth]{images/ui_receipt.png}
+}{
+    \fbox{\parbox{0.9\textwidth}{\centering \vspace{15mm}
+    \textbf{[HÌNH 3.5: MẪU HÓA ĐƠN BÁN LẺ IN NHIỆT 80MM (THERMAL RECEIPT)]}\\
+    \textit{(Vị trí ảnh chụp: report/images/ui\_receipt.png)}\\
+    \vspace{15mm}}}
+}
 \caption{Mẫu Hóa đơn bán lẻ in nhiệt 80mm chuẩn hóa}
 \label{fig:ui_receipt}
 \end{figure}
@@ -170,10 +208,14 @@ Màn hình Lịch sử đơn hàng (\texttt{OrderHistory} - Hình \ref{fig:ui_or
 
 \begin{figure}[htbp]
 \centering
-\fbox{\parbox{0.9\textwidth}{\centering \vspace{15mm}
-\textbf{[HÌNH 3.5: GIAO DIỆN LỊCH SỬ ĐƠN HÀNG VÀ THEO DÕI TRẠNG THÁI]}\\
-\textit{(Vị trí ảnh chụp: report/images/ui\_order\_history.png)}\\
-\vspace{15mm}}}
+\IfFileExists{images/ui_order_history.png}{
+    \includegraphics[width=0.92\textwidth]{images/ui_order_history.png}
+}{
+    \fbox{\parbox{0.9\textwidth}{\centering \vspace{15mm}
+    \textbf{[HÌNH 3.6: GIAO DIỆN LỊCH SỬ ĐƠN HÀNG VÀ THEO DÕI TRẠNG THÁI]}\\
+    \textit{(Vị trí ảnh chụp: report/images/ui\_order\_history.png)}\\
+    \vspace{15mm}}}
+}
 \caption{Giao diện Quản lý Lịch sử đơn hàng và Trạng thái thanh toán}
 \label{fig:ui_order_history}
 \end{figure}
@@ -184,23 +226,50 @@ Màn hình Lịch sử đơn hàng (\texttt{OrderHistory} - Hình \ref{fig:ui_or
 
 Phân hệ Quản trị được bảo vệ bởi bộ định tuyến an ninh \texttt{AdminRoute}, chỉ cho phép tài khoản có vai trò \texttt{ROLE\_ADMIN} truy cập.
 
-\subsection{Bảng điều khiển chỉ số kinh doanh (Dashboard)}
-Trang chủ Quản trị (\texttt{/dashboard} - Hình \ref{fig:ui_dashboard}) cung cấp bức tranh toàn cảnh về hiệu quả kinh doanh của cửa hàng trong ngày:
+\subsection{Bảng điều khiển chỉ số kinh doanh và Báo cáo Doanh thu (Dashboard KPI)}
+Trang chủ Quản trị (\texttt{/dashboard} - Hình \ref{fig:ui_dashboard}) cung cấp bức tranh toàn cảnh về hiệu quả kinh doanh của cửa hàng trong ngày và hỗ trợ báo cáo thống kê doanh thu chuyên sâu:
 \begin{itemize}[leftmargin=1.5cm]
-    \item Thẻ đo lường KPI tổng doanh thu hôm nay (Today's Total Sales).
-    \item Thẻ đếm số lượng hóa đơn hoàn tất trong ngày (Completed Orders Count).
-    \item Bảng danh sách các đơn hàng mới nhất phát sinh theo thời gian thực.
-    \item Thẻ cảnh báo các mặt hàng có số dư tồn kho thấp dưới ngưỡng an toàn, hỗ trợ người quản lý lên kế hoạch nhập hàng kịp thời.
+    \item \textbf{Thẻ đo lường KPI doanh thu:} Tổng doanh thu ngày/tuần/tháng hiện tại, tỉ lệ tăng trưởng so với kỳ trước cùng khoảng thời gian, biểu thị bằng mũi tên xu hướng tăng/giảm kèm phần trăm.
+    \item \textbf{Thẻ đếm số lượng hóa đơn:} Tổng số đơn hàng hoàn tất (\texttt{COMPLETED}), số đơn đang chờ (\texttt{PENDING}) và số đơn đã hủy (\texttt{CANCELLED}) trong khoảng thời gian.
+    \item \textbf{Bảng danh sách đơn hàng mới nhất:} Hiển thị các giao dịch vừa phát sinh theo thời gian thực kèm mã hóa đơn và trạng thái thanh toán.
+    \item \textbf{Bảng xếp hạng sản phẩm bán chạy (Top Items):} Danh sách các sản phẩm có số lượng bán cao nhất, tổng hợp từ bảng \texttt{tbl\_order\_items} theo biến thể SKU.
+    \item \textbf{Cảnh báo tồn kho thấp (Low Stock Alert):} Liệt kê các biến thể có số dư \texttt{cachedStockQuantity} dưới ngưỡng cảnh báo, giúp quản lý chủ động lên kế hoạch nhập hàng kịp thời.
 \end{itemize}
 
 \begin{figure}[htbp]
 \centering
-\fbox{\parbox{0.9\textwidth}{\centering \vspace{15mm}
-\textbf{[HÌNH 3.6: BẢNG ĐIỀU KHIỂN CHỈ SỐ KINH DOANH (ADMIN DASHBOARD)]}\\
-\textit{(Vị trí ảnh chụp: report/images/ui\_dashboard.png)}\\
-\vspace{15mm}}}
-\caption{Giao diện Bảng điều khiển kinh doanh tổng quan (Dashboard)}
+\IfFileExists{images/ui_dashboard.png}{
+    \includegraphics[width=0.92\textwidth]{images/ui_dashboard.png}
+}{
+    \fbox{\parbox{0.9\textwidth}{\centering \vspace{15mm}
+    \textbf{[HÌNH 3.7: BẢNG ĐIỀU KHIỂN CHỈ SỐ KINH DOANH VÀ BÁO CÁO DOANH THU (DASHBOARD)]}\\
+    \textit{(Vị trí ảnh chụp: report/images/ui\_dashboard.png)}\\
+    \vspace{15mm}}}
+}
+\caption{Giao diện Bảng điều khiển kinh doanh tổng quan và Báo cáo Doanh thu (Dashboard)}
 \label{fig:ui_dashboard}
+\end{figure}
+
+\subsection{Quản trị Danh mục hàng hóa (Categories)}
+Giao diện Quản trị Danh mục (\texttt{/categories} - Hình \ref{fig:ui_manage_categories}) cho phép người quản lý tổ chức cây danh mục mặt hàng theo từng nhóm nghiệp vụ:
+\begin{itemize}[leftmargin=1.5cm]
+    \item Danh sách phân loại các nhóm sản phẩm (Cà phê, Trà hoa quả, Đồ ăn nhanh, Bánh ngọt).
+    \item Thêm mới, cập nhật tên danh mục, biểu tượng nhận diện và trạng thái kích hoạt hiển thị tại quầy POS.
+    \item Ràng buộc toàn vẹn: Không cho phép xóa danh mục khi đang có sản phẩm con liên kết (\texttt{ON DELETE RESTRICT}).
+\end{itemize}
+
+\begin{figure}[htbp]
+\centering
+\IfFileExists{images/ui_manage_categories.png}{
+    \includegraphics[width=0.92\textwidth]{images/ui_manage_categories.png}
+}{
+    \fbox{\parbox{0.9\textwidth}{\centering \vspace{15mm}
+    \textbf{[HÌNH 3.8: GIAO DIỆN QUẢN TRỊ DANH MỤC HÀNG HÓA]}\\
+    \textit{(Vị trí ảnh chụp: report/images/ui\_manage\_categories.png)}\\
+    \vspace{15mm}}}
+}
+\caption{Giao diện Quản trị Danh mục hàng hóa (Categories)}
+\label{fig:ui_manage_categories}
 \end{figure}
 
 \subsection{Quản lý Sản phẩm, Biến thể SKU và Tải ảnh AWS S3}
@@ -213,12 +282,38 @@ Trang Quản lý Sản phẩm (\texttt{/items} - Hình \ref{fig:ui_manage_items}
 
 \begin{figure}[htbp]
 \centering
-\fbox{\parbox{0.9\textwidth}{\centering \vspace{15mm}
-\textbf{[HÌNH 3.7: GIAO DIỆN QUẢN LÝ SẢN PHẨM VÀ CÁC BIẾN THỂ PHÂN LOẠI]}\\
-\textit{(Vị trí ảnh chụp: report/images/ui\_manage\_items.png)}\\
-\vspace{15mm}}}
+\IfFileExists{images/ui_manage_items.png}{
+    \includegraphics[width=0.92\textwidth]{images/ui_manage_items.png}
+}{
+    \fbox{\parbox{0.9\textwidth}{\centering \vspace{15mm}
+    \textbf{[HÌNH 3.9: GIAO DIỆN QUẢN LÝ SẢN PHẨM VÀ CÁC BIẾN THỂ PHÂN LOẠI]}\\
+    \textit{(Vị trí ảnh chụp: report/images/ui\_manage\_items.png)}\\
+    \vspace{15mm}}}
+}
 \caption{Giao diện Quản lý danh mục Sản phẩm và Biến thể SKU}
 \label{fig:ui_manage_items}
+\end{figure}
+
+\subsection{Quản trị Nhóm tùy chọn bổ sung (Modifiers)}
+Giao diện Quản lý Nhóm tùy chọn (\texttt{/modifiers} - Hình \ref{fig:ui_manage_modifiers}) hỗ trợ định nghĩa các nhóm phụ phí và gia giảm:
+\begin{itemize}[leftmargin=1.5cm]
+    \item Thiết lập các nhóm như Topping thêm, Mức đá (0\%, 50\%, 100\%), Mức đường (0\%, 30\%, 70\%, 100\%).
+    \item Cấu hình số lựa chọn tối thiểu (\texttt{minSelections}) và tối đa (\texttt{maxSelections}).
+    \item Danh sách các tùy chọn chi tiết bên trong nhóm kèm mức điều chỉnh giá (\texttt{priceAdjustment}).
+\end{itemize}
+
+\begin{figure}[htbp]
+\centering
+\IfFileExists{images/ui_manage_modifiers.png}{
+    \includegraphics[width=0.92\textwidth]{images/ui_manage_modifiers.png}
+}{
+    \fbox{\parbox{0.9\textwidth}{\centering \vspace{15mm}
+    \textbf{[HÌNH 3.10: GIAO DIỆN QUẢN TRỊ NHÓM TÙY CHỌN BỔ SUNG (MODIFIERS)]}\\
+    \textit{(Vị trí ảnh chụp: report/images/ui\_manage\_modifiers.png)}\\
+    \vspace{15mm}}}
+}
+\caption{Giao diện Quản trị Nhóm tùy chọn bổ sung (Modifiers)}
+\label{fig:ui_manage_modifiers}
 \end{figure}
 
 \subsection{Quản lý Kho sổ cái và Kiểm kê cân bằng tồn kho}
@@ -232,10 +327,14 @@ Cửa sổ \texttt{StockOperationModal} (Hình \ref{fig:ui_stock_operation}) cun
 
 \begin{figure}[htbp]
 \centering
-\fbox{\parbox{0.9\textwidth}{\centering \vspace{15mm}
-\textbf{[HÌNH 3.8: POPUP THAO TÁC SỔ CÁI KHO VÀ KIỂM KÊ CÂN BẰNG TỒN KHO]}\\
-\textit{(Vị trí ảnh chụp: report/images/ui\_stock\_operation.png)}\\
-\vspace{15mm}}}
+\IfFileExists{images/ui_stock_operation.png}{
+    \includegraphics[width=0.92\textwidth]{images/ui_stock_operation.png}
+}{
+    \fbox{\parbox{0.9\textwidth}{\centering \vspace{15mm}
+    \textbf{[HÌNH 3.11: POPUP THAO TÁC SỔ CÁI KHO VÀ KIỂM KÊ CÂN BẰNG TỒN KHO]}\\
+    \textit{(Vị trí ảnh chụp: report/images/ui\_stock\_operation.png)}\\
+    \vspace{15mm}}}
+}
 \caption{Giao diện Popup Quản lý Sổ cái kho và Kiểm kê thực tế}
 \label{fig:ui_stock_operation}
 \end{figure}
@@ -245,49 +344,66 @@ Các màn hình quản trị bổ trợ gồm:
 \begin{itemize}[leftmargin=1.5cm]
     \item \textbf{Quản lý Khuyến mãi (\texttt{/promotions} - Hình \ref{fig:ui_manage_promotions}):} Thiết lập các chương trình Coupon, Happy Hour, BOGO; hỗ trợ bật/tắt nhanh trạng thái kích hoạt (\texttt{toggleActive}).
     \item \textbf{Quản lý Khách hàng CRM (\texttt{/customers} - Hình \ref{fig:ui_manage_customers}):} Tra cứu danh bạ khách hàng, theo dõi lịch sử doanh số tích lũy và số lượng hóa đơn đã mua.
-    \item \textbf{Quản lý Người dùng (\texttt{/users} - Hình \ref{fig:ui_manage_users}):} Cấp tài khoản nhân viên mới, cập nhật mật khẩu và gán vai trò quyền hạn (\texttt{ROLE\_ADMIN} vs \texttt{ROLE\_USER}).
+    \item \textbf{Quản lý Người dùng (\texttt{/users} - Hình \ref{fig:ui_manage_users}):} Cấp tài khoản nhân viên mới, cập nhật mật khẩu và gán vai trò quyền hạn (\texttt{ROLE\_ADMIN} vs \texttt{ROLE\_STAFF}).
     \item \textbf{Nhật ký Kiểm toán Hoạt động (\texttt{/activity-logs} - Hình \ref{fig:ui_activity_logs}):} Tra cứu và lọc lịch sử thao tác của các tài khoản trong hệ thống phục vụ công tác đối soát an ninh.
 \end{itemize}
 
 \begin{figure}[htbp]
 \centering
-\fbox{\parbox{0.9\textwidth}{\centering \vspace{12mm}
-\textbf{[HÌNH 3.9: GIAO DIỆN QUẢN LÝ CHƯƠNG TRÌNH KHUYẾN MÃI (PROMOTIONS)]}\\
-\textit{(Vị trí ảnh chụp: report/images/ui\_manage\_promotions.png)}\\
-\vspace{12mm}}}
+\IfFileExists{images/ui_manage_promotions.png}{
+    \includegraphics[width=0.92\textwidth]{images/ui_manage_promotions.png}
+}{
+    \fbox{\parbox{0.9\textwidth}{\centering \vspace{12mm}
+    \textbf{[HÌNH 3.12: GIAO DIỆN QUẢN LÝ CHƯƠNG TRÌNH KHUYẾN MÃI (PROMOTIONS)]}\\
+    \textit{(Vị trí ảnh chụp: report/images/ui\_manage\_promotions.png)}\\
+    \vspace{12mm}}}
+}
 \caption{Giao diện Quản lý Chương trình Khuyến mãi đa quy tắc}
 \label{fig:ui_manage_promotions}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
-\fbox{\parbox{0.9\textwidth}{\centering \vspace{12mm}
-\textbf{[HÌNH 3.10: GIAO DIỆN QUẢN LÝ DANH BẠ KHÁCH HÀNG THÂN THIẾT CRM]}\\
-\textit{(Vị trí ảnh chụp: report/images/ui\_manage\_customers.png)}\\
-\vspace{12mm}}}
+\IfFileExists{images/ui_manage_customers.png}{
+    \includegraphics[width=0.92\textwidth]{images/ui_manage_customers.png}
+}{
+    \fbox{\parbox{0.9\textwidth}{\centering \vspace{12mm}
+    \textbf{[HÌNH 3.13: GIAO DIỆN QUẢN LÝ DANH BẠ KHÁCH HÀNG THÂN THIẾT CRM]}\\
+    \textit{(Vị trí ảnh chụp: report/images/ui\_manage\_customers.png)}\\
+    \vspace{12mm}}}
+}
 \caption{Giao diện Quản lý Khách hàng thân thiết CRM}
 \label{fig:ui_manage_customers}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
-\fbox{\parbox{0.9\textwidth}{\centering \vspace{12mm}
-\textbf{[HÌNH 3.11: GIAO DIỆN QUẢN TRỊ NGƯỜI DÙNG VÀ PHÂN QUYỀN RBAC]}\\
-\textit{(Vị trí ảnh chụp: report/images/ui\_manage\_users.png)}\\
-\vspace{12mm}}}
+\IfFileExists{images/ui_manage_users.png}{
+    \includegraphics[width=0.92\textwidth]{images/ui_manage_users.png}
+}{
+    \fbox{\parbox{0.9\textwidth}{\centering \vspace{12mm}
+    \textbf{[HÌNH 3.14: GIAO DIỆN QUẢN TRỊ NGƯỜI DÙNG VÀ PHÂN QUYỀN RBAC]}\\
+    \textit{(Vị trí ảnh chụp: report/images/ui\_manage\_users.png)}\\
+    \vspace{12mm}}}
+}
 \caption{Giao diện Quản trị Người dùng và Phân quyền RBAC}
 \label{fig:ui_manage_users}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
-\fbox{\parbox{0.9\textwidth}{\centering \vspace{12mm}
-\textbf{[HÌNH 3.12: GIAO DIỆN NHẬT KÝ KIỂM TOÁN HOẠT ĐỘNG (ACTIVITY LOGS)]}\\
-\textit{(Vị trí ảnh chụp: report/images/ui\_activity\_logs.png)}\\
-\vspace{12mm}}}
+\IfFileExists{images/ui_activity_logs.png}{
+    \includegraphics[width=0.92\textwidth]{images/ui_activity_logs.png}
+}{
+    \fbox{\parbox{0.9\textwidth}{\centering \vspace{12mm}
+    \textbf{[HÌNH 3.15: GIAO DIỆN NHẬT KÝ KIỂM TOÁN HOẠT ĐỘNG (ACTIVITY LOGS)]}\\
+    \textit{(Vị trí ảnh chụp: report/images/ui\_activity\_logs.png)}\\
+    \vspace{12mm}}}
+}
 \caption{Giao diện Nhật ký Kiểm toán Hoạt động hệ thống (Activity Logs)}
 \label{fig:ui_activity_logs}
 \end{figure}
+
 
 % ==============================================================================
 \section{Trích xuất thuật toán và xử lý nghiệp vụ cốt lõi}

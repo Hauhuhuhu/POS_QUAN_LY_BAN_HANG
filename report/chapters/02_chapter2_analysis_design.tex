@@ -50,6 +50,8 @@ Hệ thống được thiết kế hướng tới phục vụ 2 nhóm đối tư
     \end{itemize}
 \end{enumerate}
 
+\textit{\textbf{Ghi chú về vai trò Thủ kho:} Trong phạm vi đề tài, chức năng quản lý kho hàng (nhập kho, xuất kho, kiểm kê) được tích hợp trực tiếp vào vai trò Quản trị viên do quy mô cửa hàng nhỏ và vừa không yêu cầu phân tách tổ chức kho riêng biệt. Quản trị viên đồng thời đảm nhiệm nghiệp vụ của Thủ kho, giúp đơn giản hóa phân quyền RBAC và phù hợp với mô hình vận hành thực tế.}
+
 \subsection{Yêu cầu chức năng chi tiết (Functional Requirements)}
 Hệ thống được phân rã thành 6 phân hệ chức năng chính, như trình bày tại Bảng \ref{tab:yeu_cau_chuc_nang}.
 
@@ -145,6 +147,7 @@ Hệ thống bao gồm 2 tác nhân con người (\textit{Thu ngân} và \textit
             $\bullet$ Nhận diện khách hàng & $\Longleftrightarrow$ [UC04: Thanh toán VietQR / Cash] & $\bullet$ Nhập / Kiểm kê kho \tabularnewline
             $\bullet$ Chuyển sang tiền mặt & $\Longleftrightarrow$ [UC05: Quản lý Kho sổ cái] $\Longleftrightarrow$ & $\bullet$ Xem Dashboard KPI \tabularnewline
             $\bullet$ In lại hóa đơn bán lẻ & $\Longleftrightarrow$ [UC06: Tra cứu Activity Logs] $\Longleftrightarrow$ & $\bullet$ Quản lý nhân viên \tabularnewline
+            & $\Longleftrightarrow$ [UC07: Xem Báo cáo Doanh thu] $\Longleftrightarrow$ & $\bullet$ Xem báo cáo thống kê \tabularnewline
         \end{tabularx}\\[2mm]
         \rule{0.9\textwidth}{0.5pt}\\[1mm]
         \textit{Actor bên ngoài: [PayOS Gateway] $\Longleftrightarrow$ Gửi Webhook xác thực đơn hàng thành công}\\[2mm]
@@ -155,9 +158,9 @@ Hệ thống bao gồm 2 tác nhân con người (\textit{Thu ngân} và \textit
 \label{fig:usecase_overall}
 \end{figure}
 
-\subsubsection{Đặc tả chi tiết 6 Use Cases cốt lõi}
+\subsubsection{Đặc tả chi tiết 7 Use Cases cốt lõi}
 
-Dưới đây là các bảng đặc tả chuẩn học thuật cho 6 ca sử dụng cốt lõi của hệ thống POS:
+Dưới đây là các bảng đặc tả chuẩn học thuật cho 7 ca sử dụng cốt lõi của hệ thống POS:
 
 % ------------------------------------------------------------------------------
 % USE CASE 01
@@ -366,7 +369,7 @@ Dưới đây là các bảng đặc tả chuẩn học thuật cho 6 ca sử d�
     \item Back-end kiểm tra vai trò an ninh trong \texttt{SecurityContextHolder}:
     \begin{itemize}
         \item Nếu người dùng là \texttt{ROLE\_ADMIN}: Hệ thống trả về toàn bộ nhật ký thao tác của tất cả các tài khoản trong hệ thống.
-        \item Nếu người dùng là \texttt{ROLE\_USER} (Thu ngân): Hệ thống tự động giới hạn chỉ trả về các bản ghi nhật ký do chính email của nhân viên đó thực hiện.
+        \item Nếu người dùng là \texttt{ROLE\_STAFF} (Thu ngân): Hệ thống tự động giới hạn chỉ trả về các bản ghi nhật ký do chính email của nhân viên đó thực hiện.
     \end{itemize}
     \item Giao diện hiển thị bảng nhật ký gồm: Thời gian thực hiện, Email người thực hiện, Loại hành động (LOGIN, CREATE, UPDATE, DELETE, CANCEL), Thực thể chịu tác động và Mô tả chi tiết.
 \end{enumerate} \\ \hline
@@ -375,6 +378,42 @@ Dưới đây là các bảng đặc tả chuẩn học thuật cho 6 ca sử d�
     \item \textit{2a. Khoảng thời gian lọc không hợp lệ (Ngày bắt đầu lớn hơn ngày kết thúc):} Hệ thống hiển thị cảnh báo lỗi dữ liệu nhập.
 \end{itemize} \\ \hline
 \textbf{Hậu điều kiện} & Người dùng nắm bắt được lịch sử biến động dữ liệu; mọi hành vi đáng ngờ đều có thể truy xuất chính xác người thực hiện và thời điểm. \\ \hline
+\end{tabularx}
+\end{table}
+
+% ------------------------------------------------------------------------------
+% USE CASE 07 - Xem báo cáo thống kê doanh thu
+% ------------------------------------------------------------------------------
+\begin{table}[htbp]
+\centering
+\caption{Bảng đặc tả chi tiết Use Case UC07: Xem Báo cáo Thống kê Doanh thu}
+\label{tab:uc07_revenue_report}
+\vspace{2mm}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Mã Use Case} & \textbf{UC07} \\ \hline
+\textbf{Tên Use Case} & Xem Báo cáo Thống kê Doanh thu và Hiệu suất Kinh doanh \\ \hline
+\textbf{Tác nhân (Actor)} & Quản trị viên \\ \hline
+\textbf{Mô tả tóm tắt} & Quản trị viên truy cập bảng điều khiển Dashboard để xem tổng quan chỉ số kinh doanh, bao gồm doanh thu, số đơn hàng, sản phẩm bán chạy và trạng thái tồn kho. \\ \hline
+\textbf{Tiền điều kiện} & Người dùng có quyền \texttt{ROLE\_ADMIN} đã đăng nhập vào hệ thống. \\ \hline
+\textbf{Luồng sự kiện chính} & 
+\begin{enumerate}[leftmargin=*, nosep]
+    \item Quản trị viên truy cập trang Dashboard (\texttt{/dashboard}).
+    \item Front-end gửi yêu cầu \texttt{GET /api/v1.0/admin/dashboard} tới Back-end.
+    \item Back-end truy vấn cơ sở dữ liệu và tổng hợp các chỉ số kinh doanh (KPI):
+    \begin{itemize}
+        \item Tổng doanh thu ngày/tuần/tháng hiện tại và tăng trưởng so với kỳ trước.
+        \item Tổng số đơn hàng thành công (\texttt{COMPLETED}) trong khoảng thời gian.
+        \item Danh sách sản phẩm bán chạy (top items theo số lượng bán).
+        \item Số lượng biến thể có tồn kho thấp (cảnh báo sắp hết hàng).
+    \end{itemize}
+    \item Back-end trả về DTO tổng hợp gồm các trường metric, Front-end hiển thị bảng điều khiển trực quan với các thẻ KPI, biểu đồ và bảng xếp hạng.
+\end{enumerate} \\ \hline
+\textbf{Luồng ngoại lệ} & 
+\begin{itemize}[leftmargin=*, nosep]
+    \item \textit{2a. Không có dữ liệu đơn hàng nào trong khoảng thời gian:} Hệ thống hiển thị các thẻ KPI với giá trị bằng $0$ và thông báo chưa có dữ liệu.
+\end{itemize} \\ \hline
+\textbf{Hậu điều kiện} & Quản trị viên nắm bắt được tình hình kinh doanh tổng quan, doanh thu, sản phẩm bán chạy và trạng thái tồn kho hiện tại. \\ \hline
 \end{tabularx}
 \end{table}
 
@@ -450,6 +489,39 @@ Biểu đồ hoạt động (Hình \ref{fig:activity_stockcheck}) mô tả quy t
 \end{minipage}
 \caption{Biểu đồ hoạt động quy trình Kiểm kê và Cân bằng tồn kho}
 \label{fig:activity_stockcheck}
+\end{figure}
+
+\subsubsection{Biểu đồ hoạt động: Quy trình Nhập kho hàng hóa}
+Biểu đồ hoạt động (Hình \ref{fig:activity_goods_receipt}) mô tả quy trình nhập kho hàng hóa mới từ nhà cung cấp hoặc bổ sung số lượng cho các biến thể SKU hiện có, ghi nhận giao dịch sổ cái loại \texttt{IN}.
+
+\begin{figure}[htbp]
+\centering
+\begin{minipage}{0.9\textwidth}
+\centering
+\fbox{
+    \parbox{0.95\textwidth}{
+        \centering \vspace{2mm}
+        \textbf{QUY TRÌNH HOẠT ĐỘNG: NHẬP KHO HÀNG HÓA (STOCK IN)}\\[3mm]
+        [Bắt đầu] $\longrightarrow$ [Quản trị viên mở trang Quản lý Kho (\texttt{/inventory})]\\[1mm]
+        $\downarrow$\\[1mm]
+        [Chọn Sản phẩm và Biến thể SKU cần nhập kho]\\[1mm]
+        $\downarrow$\\[1mm]
+        [Nhập số lượng hàng nhập thêm (quantity $> 0$)]\\[1mm]
+        $\downarrow$\\[1mm]
+        [Nhập ghi chú nguồn gốc lô hàng (ví dụ: ''Nhập từ NCC ABC'')]\\[1mm]
+        $\downarrow$\\[1mm]
+        [Nhấn xác nhận nhập kho]\\[1mm]
+        $\downarrow$\\[1mm]
+        [Back-end tạo giao dịch sổ cái \texttt{IN} trong \texttt{tbl\_inventory\_transactions}]\\[1mm]
+        $\downarrow$\\[1mm]
+        [Hệ thống cộng thêm số lượng vào tồn kho $\rightarrow$ Cập nhật \texttt{cachedStockQuantity}]\\[1mm]
+        $\downarrow$\\[1mm]
+        [Ghi vết thao tác vào \texttt{tbl\_activity\_logs}] $\longrightarrow$ [Kết thúc]\\[2mm]
+    }
+}
+\end{minipage}
+\caption{Biểu đồ hoạt động quy trình Nhập kho hàng hóa từ nhà cung cấp}
+\label{fig:activity_goods_receipt}
 \end{figure}
 
 \subsection{Biểu đồ tuần tự (Sequence Diagrams)}
@@ -564,7 +636,65 @@ Cấu trúc quan hệ giữa các lớp đối tượng thực thể (JPA Entiti
 \label{fig:class_diagram}
 \end{figure}
 
-\subsection{Biểu đồ thành phần và Biểu đồ triển khai (Deployment Diagram)}
+\subsection{Biểu đồ thành phần (Component Diagram)}
+Biểu đồ thành phần (Hình \ref{fig:component_diagram}) mô tả các thành phần phần mềm chính của hệ thống POS và mối quan hệ phụ thuộc giữa chúng theo kiến trúc 3 tầng (Presentation - Business Logic - Data Access):
+
+\begin{figure}[htbp]
+\centering
+\begin{minipage}{0.95\textwidth}
+\centering
+\fbox{
+    \parbox{0.95\textwidth}{
+        \centering \vspace{2mm}
+        \textbf{SƠ ĐỒ THÀNH PHẦN HỆ THỐNG POS (COMPONENT DIAGRAM)}\\[3mm]
+        \rule{0.9\textwidth}{0.5pt}\\[2mm]
+        \fbox{\parbox{0.92\textwidth}{\centering \textbf{TẦNG TRÌNH BÀY (Presentation Layer - React 19 SPA)}\\[2mm]
+        \begin{tabularx}{0.9\textwidth}{XXX}
+            \fbox{\parbox{2.5cm}{\centering \small \texttt{POS Checkout}\\(Explore, Cart)}} &
+            \fbox{\parbox{2.5cm}{\centering \small \texttt{Admin Pages}\\(Dashboard, CRUD)}} &
+            \fbox{\parbox{2.5cm}{\centering \small \texttt{Auth Module}\\(Login, Session)}}
+        \end{tabularx}\\[1mm]
+        \begin{tabularx}{0.9\textwidth}{XX}
+            \fbox{\parbox{3.5cm}{\centering \small \texttt{TanStack Query}\\(Server State Cache)}} &
+            \fbox{\parbox{3.5cm}{\centering \small \texttt{Axios Interceptor}\\(JWT Bearer, Refresh)}}
+        \end{tabularx}
+        }}\\[3mm]
+        $\Downarrow$ \textit{RESTful JSON (HTTPS)}\\[2mm]
+        \fbox{\parbox{0.92\textwidth}{\centering \textbf{TẦNG NGHIỆP VỤ (Business Logic Layer - Spring Boot 4.1.0)}\\[2mm]
+        \begin{tabularx}{0.9\textwidth}{XXX}
+            \fbox{\parbox{2.5cm}{\centering \small \texttt{AuthController}\\+ JwtFilter}} &
+            \fbox{\parbox{2.5cm}{\centering \small \texttt{OrderService}\\+ Compensation}} &
+            \fbox{\parbox{2.5cm}{\centering \small \texttt{ItemService}\\+ VariantService}}}
+        \end{tabularx}\\[1mm]
+        \begin{tabularx}{0.9\textwidth}{XXX}
+            \fbox{\parbox{2.5cm}{\centering \small \texttt{InventoryService}\\(Ledger IN/OUT)}} &
+            \fbox{\parbox{2.5cm}{\centering \small \texttt{PromotionService}\\(No-Stacking)}} &
+            \fbox{\parbox{2.5cm}{\centering \small \texttt{ActivityLog}\\(Audit Trail)}}
+        \end{tabularx}
+        }}\\[3mm]
+        $\Downarrow$ \textit{JPA / Flyway}\\[2mm]
+        \fbox{\parbox{0.92\textwidth}{\centering \textbf{TẦNG TRUY CẬP DỮ LIỆU (Data Access Layer)}\\[2mm]
+        \begin{tabularx}{0.9\textwidth}{XXX}
+            \fbox{\parbox{2.5cm}{\centering \small \texttt{MySQL 8.0}\\(14 Tables InnoDB)}} &
+            \fbox{\parbox{2.5cm}{\centering \small \texttt{AWS S3 SDK}\\(Image Storage)}} &
+            \fbox{\parbox{2.5cm}{\centering \small \texttt{PayOS SDK}\\(VietQR Webhook)}}
+        \end{tabularx}
+        }}\\[2mm]
+    }
+}
+\end{minipage}
+\caption{Biểu đồ thành phần kiến trúc 3 tầng của hệ thống POS}
+\label{fig:component_diagram}
+\end{figure}
+
+Các thành phần chính được phân tách theo nguyên tắc trách nhiệm đơn lẻ (Single Responsibility):
+\begin{itemize}[leftmargin=1.5cm]
+    \item \textbf{Tầng trình bày (Presentation):} Giao diện React 19 SPA gồm module POS bán hàng, trang quản trị CRUD và module xác thực. Quản lý trạng thái server qua TanStack Query v5, gắn JWT vào mọi request qua Axios Interceptor.
+    \item \textbf{Tầng nghiệp vụ (Business Logic):} Các Service xử lý toàn bộ quy tắc kinh doanh --- tính toán khuyến mãi No-Stacking, giao dịch bù trừ kho khi hủy đơn (Compensating Transaction), kiểm soát truy cập RBAC qua Spring Security và ghi nhật ký kiểm toán thống nhất.
+    \item \textbf{Tầng truy cập dữ liệu (Data Access):} MySQL 8.0 InnoDB (14 bảng) quản lý qua Flyway migration, tích hợp AWS S3 cho lưu trữ hình ảnh và PayOS SDK cho cổng thanh toán VietQR.
+\end{itemize}
+
+\subsection{Biểu đồ triển khai (Deployment Diagram)}
 Kiến trúc phần cứng và các thành phần phần mềm triển khai trên môi trường thực tế được thiết kế theo mô hình phân tán nhiều tầng (Multi-tier Distributed Deployment Architecture), như trình bày tại Hình \ref{fig:deployment_diagram}:
 
 \begin{figure}[htbp]
@@ -596,7 +726,7 @@ Kiến trúc phần cứng và các thành phần phần mềm triển khai trê
             & $\stackrel{\text{HTTPS REST}}{\longleftrightarrow}$ &
             \fbox{\parbox{4.5cm}{\centering \textbf{CƠ SỞ DỮ LIỆU MYSQL}\\
             \textit{(MySQL 8.0 InnoDB Container)}\\
-            $\bullet$ Bảng dữ liệu quan hệ (13 tables)\\
+            $\bullet$ Bảng dữ liệu quan hệ (14 tables)\\
             $\bullet$ Sổ cái biến động kho\\
             $\bullet$ Flyway Schema History}} \\[5mm]
             & & $\updownarrow$ \textit{AWS SDK HTTPS}\\[2mm]
@@ -621,8 +751,6 @@ Các nút thành phần trong sơ đồ triển khai:
 \end{itemize}
 
 % ==============================================================================
-% MỤC 2.3: THIẾT KẾ CƠ SỞ DỮ LIỆU SẼ ĐƯỢC TIẾP TỤC TRONG TICKET 04
+% MỤC 2.3: THIẾT KẾ CƠ SỞ DỮ LIỆU
 % ==============================================================================
-\IfFileExists{chapters/02_chapter2_part2_database.tex}{
-    \input{chapters/02_chapter2_part2_database.tex}
-}{}
+\input{chapters/02_chapter2_part2_database.tex}

@@ -31,7 +31,7 @@
   - Dev mode: `./mvnw spring-boot:run`
   - Test suite: `./mvnw test`
   - Build code: `./mvnw clean install` hoặc `./mvnw clean package`
-  - Migrate database: Hiện tại hệ thống không dùng tool migration như Flyway/Liquibase, thay vào đó dùng cấu hình JPA auto DDL update (`spring.jpa.hibernate.ddl-auto=update`).
+  - Migrate database: Hệ thống sử dụng **Flyway** để quản lý migration schema (`spring.flyway.enabled=true`, `spring.jpa.hibernate.ddl-auto=validate`). Các kịch bản migration được đặt tại `src/main/resources/db/migration/` (ví dụ: `V1__init_schema.sql`).
 
 ## 3. Core Domain Concepts & Data Models
 - **Entities / Aggregates trung tâm:**
@@ -72,7 +72,7 @@
   - `AuthResponse` trả về đầy đủ `name`, `email`, `role`, và `token`. Menubar hiển thị tên người dùng kèm huy hiệu phân biệt vai trò (`ROLE_ADMIN` vs `ROLE_STAFF`).
 
 ## 5. Known Technical Debt & Fragile Areas
-1. **Database Migration Strategy:** Sử dụng `ddl-auto=update` trên production rất nguy hiểm, dễ gây lỗi mất schema/dữ liệu khi refactor cấu trúc DB. (Cần triển khai Flyway hoặc Liquibase).
+1. **Database Migration Strategy:** Đã áp dụng Flyway (`ddl-auto=validate`). Cần duy trì kỷ luật đặt tên migration (`V{n}__description.sql`) và không quay lại `ddl-auto=update` trên production.
 2. **Cấu hình Refresh Token Cookie:** Cần bảo đảm `Secure`, `SameSite`, `Path` và domain của cookie được cấu hình đúng theo môi trường triển khai; Access Token không được đưa trở lại localStorage.
 3. **API Response Standardization:** Việc trả về trực tiếp DTO không qua wrapper có thể gây khó khăn trong tương lai khi cần metadata (như pagination, status messages). Cần chú ý khi mở rộng API mới không làm vỡ logic parse data hiện tại trên FE.
 4. **Environment Variables Security:** Config như `AWS_ACCESS`, `PAYOS_API` đang được inject từ `.env`. Cần đảm bảo các file này luôn nằm trong `.gitignore` và không bị vô tình hardcode lên source code trong quá trình thêm tính năng.
