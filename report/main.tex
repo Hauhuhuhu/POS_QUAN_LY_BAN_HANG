@@ -10,18 +10,25 @@
 \setlength{\parindent}{1cm} % Lùi đầu dòng 1cm
 \setlength{\parskip}{6pt}   % Khoảng cách giữa các đoạn văn
 
-% Hỗ trợ Font tiếng Việt chuẩn Unicode cho XeLaTeX
-\usepackage{fontspec}
-\setmainfont{Times New Roman}
-\setmonofont{Courier New}
+% Hỗ trợ Font tiếng Việt đa nền tảng (XeLaTeX / LuaLaTeX / pdfLaTeX)
+\usepackage{iftex}
+\ifXeTeX
+  \usepackage{fontspec}
+  \setmainfont{Times New Roman}
+\else\ifLuaTeX
+  \usepackage{fontspec}
+  \setmainfont{Times New Roman}
+\else
+  \usepackage[utf8]{inputenc}
+  \usepackage[T5]{fontenc}
+  \usepackage{mathptmx}
+\fi\fi
 
 % ==============================================================================
 % CÁC GÓI LỆNH ĐỒ HỌA, BẢNG BIỂU & CODE LISTING
 % ==============================================================================
 \usepackage{graphicx}
-\usepackage{float}        % Định vị hình ảnh chính xác với [H] (ngăn lỗi Too many unprocessed floats)
-\usepackage{extrafloats}  % Mở rộng bộ nhớ đệm chứa float lên 1000 phần tử
-\usepackage{placeins}     % Chặn float tràn qua các chương khác (\FloatBarrier)
+\usepackage{float}        % Định vị hình ảnh chính xác với [H]
 \usepackage{xcolor}
 \usepackage{booktabs}
 \usepackage{tabularx}

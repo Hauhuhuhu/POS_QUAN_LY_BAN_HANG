@@ -415,7 +415,7 @@ Dưới đây là 5 đoạn mã nguồn trích xuất từ các thành phần x�
 Đoạn mã trích xuất từ \texttt{OrderServiceImpl.java} thể hiện việc ghi nhận giao dịch xuất kho \texttt{OUT} có số lượng âm khi tạo đơn hàng và cập nhật lại trường tồn kho đệm \texttt{cachedStockQuantity}:
 
 \begin{lstlisting}[language=Java, caption={Thuật toán trừ kho sổ cái khi tạo đơn hàng mới}]
-// Trừ kho thông qua sổ cái giao dịch (Inventory Ledger OUT)
+// Tru kho thong qua so cai giao dich (Inventory Ledger OUT)
 for (OrderItemEntity item : newOrder.getItems()) {
     VariantEntity variant = null;
     if (item.getVariantId() != null && !item.getVariantId().trim().isEmpty()) {
@@ -428,13 +428,13 @@ for (OrderItemEntity item : newOrder.getItems()) {
                 .transactionId(UUID.randomUUID().toString())
                 .variant(variant)
                 .transactionType(TransactionType.OUT)
-                .quantity(-Math.abs(soldQuantity)) // Số lượng âm biểu thị xuất kho bán lẻ
+                .quantity(-Math.abs(soldQuantity)) // So luong am bieu thi xuat kho ban le
                 .referenceId(newOrder.getOrderId())
                 .note("POS Sale - Order " + newOrder.getOrderId())
                 .build();
         inventoryTransactionRepository.saveAndFlush(transaction);
 
-        // Tính toán lại tồn kho thực tế từ tổng các giao dịch và đồng bộ vào cache
+        // Tinh toan lai ton kho thuc te tu tong cac giao dich va dong bo vao cache
         Integer updatedStock = inventoryTransactionRepository.calculateStockByVariantId(variant.getVariantId());
         variant.setCachedStockQuantity(updatedStock != null ? updatedStock : 0);
         variantRepository.save(variant);
@@ -446,7 +446,7 @@ for (OrderItemEntity item : newOrder.getItems()) {
 
 \begin{lstlisting}[language=Java, caption={Cơ chế giao dịch bù trừ (Compensating Transaction) khi hủy đơn}]
 private void compensatePendingOrder(OrderEntity order, String referenceId, String reason) {
-    // 1. Giao dịch bù trừ kho (Compensating Ledger Transaction IN)
+    // 1. Giao dich bu tru kho (Compensating Ledger Transaction IN)
     if (order.getItems() != null) {
         for (OrderItemEntity item : order.getItems()) {
             VariantEntity variant = variantRepository.findByVariantId(item.getVariantId()).orElse(null);
@@ -456,9 +456,9 @@ private void compensatePendingOrder(OrderEntity order, String referenceId, Strin
                         .transactionId(UUID.randomUUID().toString())
                         .variant(variant)
                         .transactionType(TransactionType.IN)
-                        .quantity(returnQty) // Nhập hoàn lại kho
+                        .quantity(returnQty) // Nhap hoan lai kho
                         .referenceId(referenceId)
-                        .note("Hoàn kho: " + reason)
+                        .note("Hoan kho: " + reason)
                         .build();
                 inventoryTransactionRepository.saveAndFlush(revertTx);
 
@@ -468,7 +468,7 @@ private void compensatePendingOrder(OrderEntity order, String referenceId, Strin
             }
         }
     }
-    // 2. Hoàn lại số lượt sử dụng voucher khuyến mãi
+    // 2. Hoan lai so luot su dung voucher khuyen mai
     if (order.getPromotionId() != null) {
         PromotionEntity promo = promotionRepository.findByPromotionId(order.getPromotionId()).orElse(null);
         if (promo != null && promo.getTimesUsed() != null && promo.getTimesUsed() > 0) {
@@ -483,7 +483,7 @@ private void compensatePendingOrder(OrderEntity order, String referenceId, Strin
 Toàn bộ quá trình tính toán tiền tệ được thực hiện phía máy chủ nhằm đảm bảo tính bảo mật và chống gian lận thay đổi giá từ phía client:
 
 \begin{lstlisting}[language=Java, caption={Thuật toán tính toán tài chính và thuế VAT phía Server}]
-// 1. Tính tổng tiền hàng gốc trước thuế và giảm giá (Subtotal)
+// 1. Tinh tong tien hang goc truoc thue va giam gia (Subtotal)
 BigDecimal subtotal = BigDecimal.ZERO;
 for (EvaluationCartItem item : request.getCartItems()) {
     BigDecimal itemPrice = item.getPrice() != null ? item.getPrice() : BigDecimal.ZERO;
@@ -491,16 +491,16 @@ for (EvaluationCartItem item : request.getCartItems()) {
     subtotal = subtotal.add(itemPrice.multiply(itemQuantity));
 }
 
-// 2. Xác định chiết khấu khuyến mãi tối ưu (Discount Amount)
+// 2. Xac dinh chiet khau khuyen mai toi uu (Discount Amount)
 BigDecimal discountAmount = bestCandidate != null ? bestCandidate.getDiscountAmount() : BigDecimal.ZERO;
 
-// 3. Tính tiền hàng chịu thuế sau giảm giá
+// 3. Tinh tien hang chiu thue sau giam gia
 BigDecimal taxableAmount = subtotal.subtract(discountAmount).max(BigDecimal.ZERO);
 
-// 4. Tính thuế giá trị gia tăng VAT 10%
+// 4. Tinh thue gia tri gia tang VAT 10%
 BigDecimal tax = taxableAmount.multiply(BigDecimal.valueOf(0.10)).setScale(2, RoundingMode.HALF_UP);
 
-// 5. Tính tổng thanh toán cuối cùng (Grand Total)
+// 5. Tinh tong thanh toan cuoi cung (Grand Total)
 BigDecimal grandTotal = taxableAmount.add(tax).setScale(2, RoundingMode.HALF_UP);
 \end{lstlisting}
 
@@ -531,7 +531,7 @@ protected void doFilterInternal(HttpServletRequest request, HttpServletResponse 
             }
         }
     } catch (JwtException | IllegalArgumentException exception) {
-        // Xóa sạch ngữ cảnh an ninh khi token không hợp lệ hoặc hết hạn -> Spring Security trả 401
+        // Xoa sach ngu canh an ninh khi token khong hop le hoac het han
         SecurityContextHolder.clearContext();
     }
     filterChain.doFilter(request, response);
@@ -542,7 +542,7 @@ protected void doFilterInternal(HttpServletRequest request, HttpServletResponse 
 Thuật toán so sánh toàn bộ các chương trình ưu đãi hiện hành và chọn ra duy nhất một chương trình có mức chiết khấu cao nhất (trích từ \texttt{PromotionServiceImpl.java}):
 
 \begin{lstlisting}[language=Java, caption={Thuật toán lựa chọn khuyến mãi tối ưu nhất}]
-// So sánh và chọn khuyến mãi có mức giảm cao nhất (No Stacking - ADR-0003)
+// So sanh va chon khuyen mai co muc giam cao nhat (No Stacking - ADR-0003)
 PromotionCandidateDto bestCandidate = null;
 for (PromotionCandidateDto candidate : candidates) {
     if (bestCandidate == null) {
@@ -552,7 +552,7 @@ for (PromotionCandidateDto candidate : candidates) {
     }
 }
 
-// Nếu có mã Coupon người dùng nhập, so sánh với khuyến mãi tự động tốt nhất
+// Neu co ma Coupon nguoi dung nhap, so sanh voi khuyen mai tu dong tot nhat
 if (couponCandidate != null) {
     if (bestCandidate == null || couponCandidate.getDiscountAmount().compareTo(bestCandidate.getDiscountAmount()) >= 0) {
         bestCandidate = couponCandidate;
@@ -567,25 +567,25 @@ if (couponCandidate != null) {
 @PostMapping("/webhook")
 public ResponseEntity<?> handleWebhook(@RequestBody Webhook webhookBody) {
     try {
-        // PayOS SDK tự động kiểm tra chữ ký điện tử dựa trên checksumKey
+        // PayOS SDK tu dong kiem tra chu ky dien tu dua tren checksumKey
         WebhookData data = payOS.webhooks().verify(webhookBody);
 
-        // Kiểm tra mã giao dịch thành công ("00")
+        // Kiem tra ma giao dich thanh cong ("00")
         if ("00".equals(data.getCode())) {
             Long orderCode = data.getOrderCode();
             OrderEntity order = orderRepository.findById(orderCode)
-                    .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn hàng #" + orderCode));
+                    .orElseThrow(() -> new RuntimeException("Order not found #" + orderCode));
 
-            // Cập nhật trạng thái thanh toán sang COMPLETED
+            // Cap nhat trang thai thanh toan sang COMPLETED
             if (order.getPaymentDetails() != null) {
                 order.getPaymentDetails().setStatus(PaymentDetails.PaymentStatus.COMPLETED);
             }
             orderRepository.save(order);
             return ResponseEntity.ok("success");
         }
-        return ResponseEntity.badRequest().body("Giao dịch không thành công");
+        return ResponseEntity.badRequest().body("Transaction failed");
     } catch (PayOSException e) {
-        // Trả lỗi 400 nếu chữ ký không khớp (dấu hiệu giả mạo Webhook)
+        // Tra loi 400 neu chu ky khong khop (dau hieu gia mao Webhook)
         return ResponseEntity.badRequest().body("Webhook verify failed: " + e.getMessage());
     }
 }
