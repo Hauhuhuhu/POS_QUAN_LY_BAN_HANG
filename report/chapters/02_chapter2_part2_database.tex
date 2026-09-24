@@ -1,0 +1,473 @@
+% ==============================================================================
+% 02_CHAPTER2_PART2_DATABASE.TEX - THIẾT KẾ CƠ SỞ DỮ LIỆU & TỪ ĐIỂN DỮ LIỆU
+% ==============================================================================
+
+\section{Phân tích và thiết kế cơ sở dữ liệu}
+\label{sec:thiet_ke_csdl}
+
+\subsection{Mô hình thực thể liên kết (ERD)}
+
+\subsubsection{Mô hình ERD mức quan niệm (Conceptual Data Model)}
+Mô hình ERD mức quan niệm xác định các thực thể thế giới thực trong bài toán kinh doanh POS và các mối liên kết bản số giữa chúng:
+\begin{itemize}[leftmargin=1.5cm]
+    \item \textbf{Danh mục (Category) và Sản phẩm (Item):} Quan hệ $1-N$. Một danh mục (ví dụ: ''Đồ uống'', ''Thức ăn nhanh'') có thể chứa nhiều sản phẩm; mỗi sản phẩm bắt buộc phải thuộc về đúng một danh mục xác định.
+    \item \textbf{Sản phẩm (Item) và Biến thể SKU (Variant):} Quan hệ $1-N$. Một sản phẩm cơ sở (như ''Áo thun'') có thể có nhiều biến thể vật lý (SKU) khác nhau về kích cỡ (S/M/L) và màu sắc (Đỏ/Xanh). Biến thể là đơn vị duy nhất quản lý tồn kho và có đơn giá bán riêng biệt.
+    \item \textbf{Sản phẩm (Item) và Nhóm tùy chọn (ModifierGroup):} Quan hệ $N-N$. Một sản phẩm có thể liên kết với nhiều nhóm tùy chọn (như ''Mức đường'', ''Topping thêm''); và một nhóm tùy chọn có thể được tái sử dụng cho nhiều sản phẩm khác nhau.
+    \item \textbf{Nhóm tùy chọn (ModifierGroup) và Tùy chọn con (Modifier):} Quan hệ $1-N$. Mỗi nhóm tùy chọn chứa danh sách các tùy chọn cụ thể (như Trân châu trắng, Thạch nha đam) kèm mức điều chỉnh giá tương ứng (\texttt{priceAdjustment}).
+    \item \textbf{Biến thể (Variant) và Giao dịch sổ cái kho (InventoryTransaction):} Quan hệ $1-N$. Mọi biến động tăng hoặc giảm tồn kho của một biến thể đều được ghi nhận bằng một dòng giao dịch sổ cái độc lập (IN, OUT, ADJUSTMENT).
+    \item \textbf{Khách hàng (Customer) và Đơn hàng (Order):} Quan hệ $1-N$. Một khách hàng thân thiết có thể thực hiện nhiều đơn mua hàng; mỗi đơn hàng có thể gắn với một khách hàng hoặc để trống (khách vãng lai).
+    \item \textbf{Đơn hàng (Order) và Chi tiết mặt hàng (OrderItem):} Quan hệ $1-N$. Một đơn hàng có thể bao gồm nhiều dòng sản phẩm; mỗi dòng lưu vết chính xác số lượng, đơn giá và cấu hình tùy chọn tại thời điểm giao dịch.
+    \item \textbf{Khuyến mãi (Promotion) và Đơn hàng (Order):} Quan hệ $1-N$. Mỗi đơn hàng chỉ được gắn tối đa với một chương trình khuyến mãi duy nhất (No Stacking).
+    \item \textbf{Người dùng (User) và Nhật ký kiểm toán (ActivityLog):} Quan hệ $1-N$. Một tài khoản nhân viên hoặc quản trị viên có thể thực hiện nhiều thao tác được ghi log trên hệ thống.
+\end{itemize}
+
+\subsubsection{Mô hình ERD mức logic và Sơ đồ quan hệ thực thể}
+Trong mô hình mức logic, quan hệ nhiều - nhiều ($N-N$) giữa bảng \texttt{tbl\_items} và \texttt{tbl\_modifier\_groups} được giải quyết triệt để thông qua bảng trung gian \texttt{tbl\_item\_modifier\_groups} chứa cặp khóa ngoại (\texttt{item\_id}, \texttt{modifier\_group\_id}). Đồng thời, các trường quan hệ đều được thiết lập ràng buộc toàn vẹn khóa ngoại (Foreign Key Constraints) với quy tắc xử lý xóa thích hợp (\texttt{RESTRICT} đối với danh mục có sản phẩm, \texttt{CASCADE} đối với sản phẩm cha bị xóa).
+
+Sơ đồ mô hình quan hệ thực thể (ERD) toàn diện của hệ thống được minh họa trực quan tại Hình \ref{fig:erd_diagram}.
+
+\begin{figure}[htbp]
+\centering
+\begin{minipage}{0.95\textwidth}
+\centering
+\fbox{
+    \parbox{0.95\textwidth}{
+        \centering \vspace{2mm}
+        {\fontsize{12pt}{14pt}\selectfont \textbf{SƠ ĐỒ QUAN HỆ THỰC THỂ CƠ SỞ DỮ LIỆU (ERD - 13 BẢNG)}}\\[3mm]
+        \begin{tabularx}{\textwidth}{ccc}
+            \fbox{\parbox{3.5cm}{\centering \textbf{tbl\_category}\\
+            \underline{id} (PK)\\
+            categoryId (UK)\\
+            name, bgColor, imgUrl}} 
+            & $\stackrel{1}{\longleftrightarrow}\stackrel{N}{\longrightarrow}$ & 
+            \fbox{\parbox{4.5cm}{\centering \textbf{tbl\_items}\\
+            \underline{id} (PK), itemId (UK)\\
+            name, price, imgUrl\\
+            \textbf{category\_id} (FK)}} \\[8mm]
+            & & $\updownarrow$ $\stackrel{1}{\longleftrightarrow}\stackrel{N}{}$ \\[2mm]
+            \fbox{\parbox{3.5cm}{\centering \textbf{tbl\_item\_modifier\_groups}\\
+            \underline{item\_id} (FK, PK)\\
+            \underline{modifier\_group\_id} (FK, PK)}}
+            & $\stackrel{N}{\longleftarrow}\stackrel{1}{\longleftrightarrow}$ &
+            \fbox{\parbox{4.5cm}{\centering \textbf{tbl\_variants}\\
+            \underline{id} (PK), variantId (UK)\\
+            sku (UK), basePrice\\
+            attributes (JSON), cachedStock\\
+            \textbf{item\_id} (FK)}} \\[8mm]
+            $\updownarrow$ $\stackrel{N}{\longleftarrow}\stackrel{1}{}$ & & $\updownarrow$ $\stackrel{1}{\longleftrightarrow}\stackrel{N}{}$ \\[2mm]
+            \fbox{\parbox{3.5cm}{\centering \textbf{tbl\_modifier\_groups}\\
+            \underline{id} (PK), groupId (UK)\\
+            name, min/maxSelections}}
+            & $\stackrel{1}{\longleftrightarrow}\stackrel{N}{\longrightarrow}$ &
+            \fbox{\parbox{4.5cm}{\centering \textbf{tbl\_inventory\_transactions}\\
+            \underline{id} (PK), transactionId (UK)\\
+            transactionType (IN/OUT/ADJ)\\
+            quantity, referenceId, note\\
+            \textbf{variant\_id} (FK)}} \\[8mm]
+            $\updownarrow$ $\stackrel{1}{\longleftrightarrow}\stackrel{N}{}$ & & \\[2mm]
+            \fbox{\parbox{3.5cm}{\centering \textbf{tbl\_modifiers}\\
+            \underline{id} (PK), modifierId (UK)\\
+            name, priceAdjustment\\
+            \textbf{group\_id} (FK)}}
+            & &
+            \fbox{\parbox{4.5cm}{\centering \textbf{tbl\_orders}\\
+            \underline{id} (PK - PayOS orderCode)\\
+            order\_code (UK), customerId\\
+            subtotal, discountAmount, tax\\
+            grandTotal, paymentMethod\\
+            paymentDetails (Embedded)}} \\[8mm]
+            & & $\updownarrow$ $\stackrel{1}{\longleftrightarrow}\stackrel{N}{}$ \\[2mm]
+            \fbox{\parbox{3.5cm}{\centering \textbf{tbl\_promotions}\\
+            \underline{id} (PK), promotionId (UK)\\
+            name, type, code (UK)\\
+            discountType, discountValue\\
+            startDate, endDate, isActive}}
+            & &
+            \fbox{\parbox{4.5cm}{\centering \textbf{tbl\_order\_items}\\
+            \underline{id} (PK)\\
+            itemId, variantId, name\\
+            basePrice, price, quantity\\
+            selectedModifiers (JSON)\\
+            \textbf{order\_id} (FK)}} \\[8mm]
+            \fbox{\parbox{3.5cm}{\centering \textbf{tbl\_customers}\\
+            \underline{id} (PK), customerId (UK)\\
+            phoneNumber (UK), name\\
+            totalSpent, orderCount}}
+            & &
+            \fbox{\parbox{4.5cm}{\centering \textbf{tbl\_users} / \textbf{refresh\_tokens}\\
+            \underline{id} (PK), userId / tokenHash (UK)\\
+            email, password, role\\
+            familyId, issuedAt, revokedAt}} \\[2mm]
+        \end{tabularx}\\[2mm]
+    }
+}
+\end{minipage}
+\caption{Sơ đồ quan hệ thực thể (ERD) mức logic của hệ thống POS}
+\label{fig:erd_diagram}
+\end{figure}
+
+\subsection{Từ điển dữ liệu chi tiết (Data Dictionary - 13 bảng)}
+Dưới đây là đặc tả chi tiết toàn bộ các trường dữ liệu, kiểu dữ liệu MySQL, ràng buộc toàn vẹn và ý nghĩa nghiệp vụ của 13 bảng thực tế trong cơ sở dữ liệu:
+
+% ------------------------------------------------------------------------------
+% 1. BẢNG TBL_USERS
+% ------------------------------------------------------------------------------
+\subsubsection{Bảng \texttt{tbl\_users} (Tài khoản người dùng và Phân quyền)}
+Lưu trữ thông tin tài khoản nhân viên thu ngân và quản trị viên hệ thống (Bảng \ref{tab:tbl_users}).
+
+\begin{table}[htbp]
+\centering
+\caption{Từ điển dữ liệu bảng \texttt{tbl\_users}}
+\label{tab:tbl_users}
+\vspace{2mm}
+\begin{tabularx}{\textwidth}{|p{2.5cm}|p{2.8cm}|c|c|p{1.8cm}|X|}
+\hline
+\textbf{Tên trường} & \textbf{Kiểu dữ liệu} & \textbf{Khóa} & \textbf{Not Null} & \textbf{Mặc định} & \textbf{Diễn giải nghiệp vụ} \\ \hline
+\texttt{id} & \texttt{BIGINT} & PK & Có & Auto Inc & Khóa chính định danh tự tăng. \\ \hline
+\texttt{userId} & \texttt{VARCHAR(255)} & UK & Có & Không & Mã định danh công khai (UUID). \\ \hline
+\texttt{email} & \texttt{VARCHAR(255)} & UK & Có & Không & Email đăng nhập duy nhất. \\ \hline
+\texttt{password} & \texttt{VARCHAR(255)} & - & Có & Không & Mật khẩu đã băm bằng BCrypt. \\ \hline
+\texttt{role} & \texttt{VARCHAR(50)} & - & Có & Không & Vai trò: \texttt{ROLE\_ADMIN} hoặc \texttt{ROLE\_USER}. \\ \hline
+\texttt{name} & \texttt{VARCHAR(255)} & - & Có & Không & Họ và tên đầy đủ của nhân viên. \\ \hline
+\texttt{createdAt} & \texttt{DATETIME(6)} & - & Có & CURRENT & Thời điểm khởi tạo tài khoản. \\ \hline
+\texttt{updatedAt} & \texttt{DATETIME(6)} & - & Không & NULL & Thời điểm cập nhật gần nhất. \\ \hline
+\end{tabularx}
+\end{table}
+
+% ------------------------------------------------------------------------------
+% 2. BẢNG REFRESH_TOKENS
+% ------------------------------------------------------------------------------
+\subsubsection{Bảng \texttt{refresh\_tokens} (Quản lý phiên làm việc bảo mật)}
+Lưu vết các khóa làm mới dài hạn phục vụ cơ chế Token Rotation chống Replay Attack (Bảng \ref{tab:refresh_tokens}).
+
+\begin{table}[htbp]
+\centering
+\caption{Từ điển dữ liệu bảng \texttt{refresh\_tokens}}
+\label{tab:refresh_tokens}
+\vspace{2mm}
+\begin{tabularx}{\textwidth}{|p{2.5cm}|p{2.8cm}|c|c|p{1.8cm}|X|}
+\hline
+\textbf{Tên trường} & \textbf{Kiểu dữ liệu} & \textbf{Khóa} & \textbf{Not Null} & \textbf{Mặc định} & \textbf{Diễn giải nghiệp vụ} \\ \hline
+\texttt{id} & \texttt{BIGINT} & PK & Có & Auto Inc & Khóa chính định danh tự tăng. \\ \hline
+\texttt{tokenHash} & \texttt{VARCHAR(128)} & UK & Có & Không & Mã băm SHA-256 của Refresh Token. \\ \hline
+\texttt{userEmail} & \texttt{VARCHAR(255)} & Index & Có & Không & Email người dùng sở hữu phiên. \\ \hline
+\texttt{familyId} & \texttt{VARCHAR(36)} & Index & Có & Không & Mã định danh nhóm phiên xoay vòng. \\ \hline
+\texttt{issuedAt} & \texttt{DATETIME(6)} & - & Có & Không & Thời điểm cấp phát token. \\ \hline
+\texttt{expiresAt} & \texttt{DATETIME(6)} & - & Có & Không & Thời điểm hết hạn (7 ngày). \\ \hline
+\texttt{revokedAt} & \texttt{DATETIME(6)} & - & Không & NULL & Thời điểm thu hồi phiên (nếu bị hủy). \\ \hline
+\end{tabularx}
+\end{table}
+
+% ------------------------------------------------------------------------------
+% 3. BẢNG TBL_CATEGORY
+% ------------------------------------------------------------------------------
+\subsubsection{Bảng \texttt{tbl\_category} (Danh mục sản phẩm)}
+Lưu trữ các nhóm danh mục phân loại mặt hàng (Bảng \ref{tab:tbl_category}).
+
+\begin{table}[htbp]
+\centering
+\caption{Từ điển dữ liệu bảng \texttt{tbl\_category}}
+\label{tab:tbl_category}
+\vspace{2mm}
+\begin{tabularx}{\textwidth}{|p{2.5cm}|p{2.8cm}|c|c|p{1.8cm}|X|}
+\hline
+\textbf{Tên trường} & \textbf{Kiểu dữ liệu} & \textbf{Khóa} & \textbf{Not Null} & \textbf{Mặc định} & \textbf{Diễn giải nghiệp vụ} \\ \hline
+\texttt{id} & \texttt{BIGINT} & PK & Có & Auto Inc & Khóa chính định danh tự tăng. \\ \hline
+\texttt{categoryId} & \texttt{VARCHAR(255)} & UK & Có & Không & Mã định danh danh mục (UUID). \\ \hline
+\texttt{name} & \texttt{VARCHAR(255)} & UK & Có & Không & Tên danh mục (ví dụ: Nước uống). \\ \hline
+\texttt{description} & \texttt{TEXT} & - & Không & NULL & Mô tả chi tiết danh mục. \\ \hline
+\texttt{bgColor} & \texttt{VARCHAR(50)} & - & Không & NULL & Mã màu nền hiển thị trên giao diện POS. \\ \hline
+\texttt{imgUrl} & \texttt{VARCHAR(1000)} & - & Không & NULL & Đường dẫn ảnh đại diện trên AWS S3. \\ \hline
+\texttt{createdAt} & \texttt{DATETIME(6)} & - & Có & CURRENT & Thời điểm tạo danh mục. \\ \hline
+\texttt{updatedAt} & \texttt{DATETIME(6)} & - & Không & NULL & Thời điểm cập nhật gần nhất. \\ \hline
+\end{tabularx}
+\end{table}
+
+% ------------------------------------------------------------------------------
+% 4. BẢNG TBL_ITEMS
+% ------------------------------------------------------------------------------
+\subsubsection{Bảng \texttt{tbl\_items} (Mặt hàng / Sản phẩm cơ sở)}
+Lưu trữ thông tin sản phẩm cơ sở trước khi phân tách thành các biến thể (Bảng \ref{tab:tbl_items}).
+
+\begin{table}[htbp]
+\centering
+\caption{Từ điển dữ liệu bảng \texttt{tbl\_items}}
+\label{tab:tbl_items}
+\vspace{2mm}
+\begin{tabularx}{\textwidth}{|p{2.5cm}|p{2.8cm}|c|c|p{1.8cm}|X|}
+\hline
+\textbf{Tên trường} & \textbf{Kiểu dữ liệu} & \textbf{Khóa} & \textbf{Not Null} & \textbf{Mặc định} & \textbf{Diễn giải nghiệp vụ} \\ \hline
+\texttt{id} & \texttt{BIGINT} & PK & Có & Auto Inc & Khóa chính định danh tự tăng. \\ \hline
+\texttt{itemId} & \texttt{VARCHAR(255)} & UK & Có & Không & Mã sản phẩm công khai (UUID). \\ \hline
+\texttt{name} & \texttt{VARCHAR(255)} & - & Có & Không & Tên mặt hàng cơ sở (ví dụ: Trà sữa). \\ \hline
+\texttt{description} & \texttt{TEXT} & - & Không & NULL & Mô tả thông tin sản phẩm. \\ \hline
+\texttt{price} & \texttt{DECIMAL(19,2)} & - & Có & Không & Đơn giá bán cơ sở mặc định. \\ \hline
+\texttt{imgUrl} & \texttt{VARCHAR(1000)} & - & Không & NULL & Đường dẫn ảnh sản phẩm trên AWS S3. \\ \hline
+\texttt{category\_id} & \texttt{BIGINT} & FK & Có & Không & Liên kết tới \texttt{tbl\_category.id} (RESTRICT). \\ \hline
+\texttt{createdAt} & \texttt{DATETIME(6)} & - & Có & CURRENT & Thời điểm tạo sản phẩm. \\ \hline
+\texttt{updatedAt} & \texttt{DATETIME(6)} & - & Không & NULL & Thời điểm cập nhật sản phẩm. \\ \hline
+\end{tabularx}
+\end{table}
+
+% ------------------------------------------------------------------------------
+% 5. BẢNG TBL_VARIANTS
+% ------------------------------------------------------------------------------
+\subsubsection{Bảng \texttt{tbl\_variants} (Biến thể sản phẩm SKU \& Tồn kho)}
+Quản lý các biến thể vật lý SKU, lưu trữ thuộc tính động và số dư tồn kho đệm (Bảng \ref{tab:tbl_variants}).
+
+\begin{table}[htbp]
+\centering
+\caption{Từ điển dữ liệu bảng \texttt{tbl\_variants}}
+\label{tab:tbl_variants}
+\vspace{2mm}
+\begin{tabularx}{\textwidth}{|p{2.5cm}|p{2.8cm}|c|c|p{1.8cm}|X|}
+\hline
+\textbf{Tên trường} & \textbf{Kiểu dữ liệu} & \textbf{Khóa} & \textbf{Not Null} & \textbf{Mặc định} & \textbf{Diễn giải nghiệp vụ} \\ \hline
+\texttt{id} & \texttt{BIGINT} & PK & Có & Auto Inc & Khóa chính định danh tự tăng. \\ \hline
+\texttt{variantId} & \texttt{VARCHAR(255)} & UK & Có & Không & Mã định danh biến thể (UUID). \\ \hline
+\texttt{sku} & \texttt{VARCHAR(255)} & UK & Có & Không & Mã vạch quản lý tồn kho duy nhất. \\ \hline
+\texttt{basePrice} & \texttt{DECIMAL(19,2)} & - & Có & Không & Giá bán áp dụng cho biến thể này. \\ \hline
+\texttt{attributes} & \texttt{TEXT} & - & Không & NULL & Chuỗi JSON thuộc tính (Size, Color). \\ \hline
+\texttt{cachedStock} & \texttt{INT} & - & Có & 0 & Số lượng tồn kho đệm đồng bộ từ sổ cái. \\ \hline
+\texttt{item\_id} & \texttt{BIGINT} & FK & Có & Không & Khóa ngoại tới \texttt{tbl\_items.id} (CASCADE). \\ \hline
+\texttt{createdAt} & \texttt{DATETIME(6)} & - & Có & CURRENT & Thời điểm khởi tạo biến thể. \\ \hline
+\texttt{updatedAt} & \texttt{DATETIME(6)} & - & Không & NULL & Thời điểm cập nhật biến thể. \\ \hline
+\end{tabularx}
+\end{table}
+
+% ------------------------------------------------------------------------------
+% 6. BẢNG TBL_MODIFIER_GROUPS
+% ------------------------------------------------------------------------------
+\subsubsection{Bảng \texttt{tbl\_modifier\_groups} (Nhóm tùy chọn bổ sung)}
+Quản lý các nhóm tùy chọn chế biến hoặc gia giảm (Bảng \ref{tab:tbl_modifier_groups}).
+
+\begin{table}[htbp]
+\centering
+\caption{Từ điển dữ liệu bảng \texttt{tbl\_modifier\_groups}}
+\label{tab:tbl_modifier_groups}
+\vspace{2mm}
+\begin{tabularx}{\textwidth}{|p{2.5cm}|p{2.8cm}|c|c|p{1.8cm}|X|}
+\hline
+\textbf{Tên trường} & \textbf{Kiểu dữ liệu} & \textbf{Khóa} & \textbf{Not Null} & \textbf{Mặc định} & \textbf{Diễn giải nghiệp vụ} \\ \hline
+\texttt{id} & \texttt{BIGINT} & PK & Có & Auto Inc & Khóa chính định danh tự tăng. \\ \hline
+\texttt{groupId} & \texttt{VARCHAR(255)} & UK & Có & Không & Mã định danh nhóm tùy chọn (UUID). \\ \hline
+\texttt{name} & \texttt{VARCHAR(255)} & - & Có & Không & Tên nhóm (ví dụ: Mức đường, Topping). \\ \hline
+\texttt{description} & \texttt{TEXT} & - & Không & NULL & Mô tả thông tin nhóm tùy chọn. \\ \hline
+\texttt{minSelections} & \texttt{INT} & - & Có & 0 & Số lượng chọn tối thiểu bắt buộc. \\ \hline
+\texttt{maxSelections} & \texttt{INT} & - & Có & 1 & Số lượng chọn tối đa cho phép. \\ \hline
+\texttt{createdAt} & \texttt{DATETIME(6)} & - & Có & CURRENT & Thời điểm khởi tạo nhóm. \\ \hline
+\texttt{updatedAt} & \texttt{DATETIME(6)} & - & Không & NULL & Thời điểm cập nhật nhóm. \\ \hline
+\end{tabularx}
+\end{table}
+
+% ------------------------------------------------------------------------------
+% 7. BẢNG TBL_MODIFIERS
+% ------------------------------------------------------------------------------
+\subsubsection{Bảng \texttt{tbl\_modifiers} (Tùy chọn bổ sung cụ thể)}
+Lưu trữ các lựa chọn chi tiết và mức phụ thu tương ứng (Bảng \ref{tab:tbl_modifiers}).
+
+\begin{table}[htbp]
+\centering
+\caption{Từ điển dữ liệu bảng \texttt{tbl\_modifiers}}
+\label{tab:tbl_modifiers}
+\vspace{2mm}
+\begin{tabularx}{\textwidth}{|p{2.5cm}|p{2.8cm}|c|c|p{1.8cm}|X|}
+\hline
+\textbf{Tên trường} & \textbf{Kiểu dữ liệu} & \textbf{Khóa} & \textbf{Not Null} & \textbf{Mặc định} & \textbf{Diễn giải nghiệp vụ} \\ \hline
+\texttt{id} & \texttt{BIGINT} & PK & Có & Auto Inc & Khóa chính định danh tự tăng. \\ \hline
+\texttt{modifierId} & \texttt{VARCHAR(255)} & UK & Có & Không & Mã định danh tùy chọn (UUID). \\ \hline
+\texttt{name} & \texttt{VARCHAR(255)} & - & Có & Không & Tên tùy chọn (ví dụ: Trân châu trắng). \\ \hline
+\texttt{priceAdj} & \texttt{DECIMAL(19,2)} & - & Có & 0.00 & Mức phụ thu cộng thêm vào giá bán. \\ \hline
+\texttt{group\_id} & \texttt{BIGINT} & FK & Có & Không & Khóa ngoại tới \texttt{tbl\_modifier\_groups.id}. \\ \hline
+\texttt{createdAt} & \texttt{DATETIME(6)} & - & Có & CURRENT & Thời điểm tạo tùy chọn. \\ \hline
+\texttt{updatedAt} & \texttt{DATETIME(6)} & - & Không & NULL & Thời điểm cập nhật tùy chọn. \\ \hline
+\end{tabularx}
+\end{table}
+
+% ------------------------------------------------------------------------------
+% 8. BẢNG TBL_ITEM_MODIFIER_GROUPS
+% ------------------------------------------------------------------------------
+\subsubsection{Bảng \texttt{tbl\_item\_modifier\_groups} (Bảng trung gian Sản phẩm - Tùy chọn)}
+Phân giải mối quan hệ nhiều - nhiều ($N-N$) giữa sản phẩm và nhóm tùy chọn (Bảng \ref{tab:tbl_item_mod}).
+
+\begin{table}[htbp]
+\centering
+\caption{Từ điển dữ liệu bảng \texttt{tbl\_item\_modifier\_groups}}
+\label{tab:tbl_item_mod}
+\vspace{2mm}
+\begin{tabularx}{\textwidth}{|p{3.5cm}|p{2.8cm}|c|c|X|}
+\hline
+\textbf{Tên trường} & \textbf{Kiểu dữ liệu} & \textbf{Khóa} & \textbf{Not Null} & \textbf{Diễn giải nghiệp vụ} \\ \hline
+\texttt{item\_id} & \texttt{BIGINT} & PK, FK & Có & Khóa ngoại liên kết tới \texttt{tbl\_items.id}. \\ \hline
+\texttt{modifier\_group\_id} & \texttt{BIGINT} & PK, FK & Có & Khóa ngoại liên kết tới \texttt{tbl\_modifier\_groups.id}. \\ \hline
+\end{tabularx}
+\end{table}
+
+% ------------------------------------------------------------------------------
+% 9. BẢNG TBL_INVENTORY_TRANSACTIONS
+% ------------------------------------------------------------------------------
+\subsubsection{Bảng \texttt{tbl\_inventory\_transactions} (Sổ cái giao dịch kho)}
+Lưu vết toàn bộ biến động kho vật lý theo nguyên tắc kế toán kép (Bảng \ref{tab:tbl_inventory}).
+
+\begin{table}[htbp]
+\centering
+\caption{Từ điển dữ liệu bảng \texttt{tbl\_inventory\_transactions}}
+\label{tab:tbl_inventory}
+\vspace{2mm}
+\begin{tabularx}{\textwidth}{|p{2.5cm}|p{2.8cm}|c|c|p{1.8cm}|X|}
+\hline
+\textbf{Tên trường} & \textbf{Kiểu dữ liệu} & \textbf{Khóa} & \textbf{Not Null} & \textbf{Mặc định} & \textbf{Diễn giải nghiệp vụ} \\ \hline
+\texttt{id} & \texttt{BIGINT} & PK & Có & Auto Inc & Khóa chính định danh tự tăng. \\ \hline
+\texttt{transactionId} & \texttt{VARCHAR(255)} & UK & Có & Không & Mã giao dịch sổ cái (UUID). \\ \hline
+\texttt{variant\_id} & \texttt{BIGINT} & FK & Có & Không & Khóa ngoại liên kết \texttt{tbl\_variants.id}. \\ \hline
+\texttt{transType} & \texttt{VARCHAR(20)} & - & Có & Không & Loại: \texttt{IN} (Nhập), \texttt{OUT} (Xuất), \texttt{ADJUSTMENT} (Cân bằng). \\ \hline
+\texttt{quantity} & \texttt{INT} & - & Có & Không & Số lượng biến động (âm khi xuất). \\ \hline
+\texttt{referenceId} & \texttt{VARCHAR(255)} & - & Không & NULL & Mã đơn hàng hoặc mã phiếu kiểm kho. \\ \hline
+\texttt{note} & \texttt{TEXT} & - & Không & NULL & Ghi chú nguyên nhân biến động kho. \\ \hline
+\texttt{createdAt} & \texttt{DATETIME(6)} & - & Có & CURRENT & Thời điểm phát sinh giao dịch. \\ \hline
+\end{tabularx}
+\end{table}
+
+% ------------------------------------------------------------------------------
+% 10. BẢNG TBL_CUSTOMERS
+% ------------------------------------------------------------------------------
+\subsubsection{Bảng \texttt{tbl\_customers} (Khách hàng thân thiết CRM)}
+Quản lý thông tin và tích lũy doanh số của khách hàng thân thiết (Bảng \ref{tab:tbl_customers}).
+
+\begin{table}[htbp]
+\centering
+\caption{Từ điển dữ liệu bảng \texttt{tbl\_customers}}
+\label{tab:tbl_customers}
+\vspace{2mm}
+\begin{tabularx}{\textwidth}{|p{2.5cm}|p{2.8cm}|c|c|p{1.8cm}|X|}
+\hline
+\textbf{Tên trường} & \textbf{Kiểu dữ liệu} & \textbf{Khóa} & \textbf{Not Null} & \textbf{Mặc định} & \textbf{Diễn giải nghiệp vụ} \\ \hline
+\texttt{id} & \texttt{BIGINT} & PK & Có & Auto Inc & Khóa chính định danh tự tăng. \\ \hline
+\texttt{customerId} & \texttt{VARCHAR(255)} & UK & Có & Không & Mã định danh khách hàng (UUID). \\ \hline
+\texttt{name} & \texttt{VARCHAR(255)} & - & Có & Không & Họ và tên khách hàng. \\ \hline
+\texttt{phoneNumber} & \texttt{VARCHAR(20)} & UK & Có & Không & Số điện thoại định danh duy nhất tại quầy. \\ \hline
+\texttt{email} & \texttt{VARCHAR(255)} & - & Không & NULL & Địa chỉ email nhận hóa đơn điện tử. \\ \hline
+\texttt{totalSpent} & \texttt{DOUBLE} & - & Có & 0.0 & Tổng số tiền khách hàng đã tích lũy chi tiêu. \\ \hline
+\texttt{orderCount} & \texttt{INT} & - & Có & 0 & Tổng số lượng hóa đơn đã mua thành công. \\ \hline
+\texttt{createdAt} & \texttt{DATETIME(6)} & - & Có & CURRENT & Thời điểm đăng ký hồ sơ khách hàng. \\ \hline
+\texttt{updatedAt} & \texttt{DATETIME(6)} & - & Không & NULL & Thời điểm cập nhật hồ sơ gần nhất. \\ \hline
+\end{tabularx}
+\end{table}
+
+% ------------------------------------------------------------------------------
+% 11. BẢNG TBL_PROMOTIONS
+% ------------------------------------------------------------------------------
+\subsubsection{Bảng \texttt{tbl\_promotions} (Chương trình Khuyến mãi đa quy tắc)}
+Cấu hình các chương trình ưu đãi, mã giảm giá, khung giờ vàng và mua tặng (Bảng \ref{tab:tbl_promotions}).
+
+\begin{table}[htbp]
+\centering
+\caption{Từ điển dữ liệu bảng \texttt{tbl\_promotions}}
+\label{tab:tbl_promotions}
+\vspace{2mm}
+\begin{tabularx}{\textwidth}{|p{2.5cm}|p{2.8cm}|c|c|p{1.8cm}|X|}
+\hline
+\textbf{Tên trường} & \textbf{Kiểu dữ liệu} & \textbf{Khóa} & \textbf{Not Null} & \textbf{Mặc định} & \textbf{Diễn giải nghiệp vụ} \\ \hline
+\texttt{id} & \texttt{BIGINT} & PK & Có & Auto Inc & Khóa chính định danh tự tăng. \\ \hline
+\texttt{promotionId} & \texttt{VARCHAR(255)} & UK & Có & Không & Mã định danh chương trình (UUID). \\ \hline
+\texttt{name} & \texttt{VARCHAR(255)} & - & Có & Không & Tên hiển thị chương trình khuyến mãi. \\ \hline
+\texttt{type} & \texttt{VARCHAR(20)} & - & Có & Không & Loại: \texttt{COUPON}, \texttt{HAPPY\_HOUR}, \texttt{BOGO}. \\ \hline
+\texttt{code} & \texttt{VARCHAR(50)} & UK & Không & NULL & Mã voucher nhập tại quầy (với COUPON). \\ \hline
+\texttt{discountType} & \texttt{VARCHAR(20)} & - & Không & NULL & Kiểu giảm: \texttt{PERCENTAGE} hoặc \texttt{FIXED\_AMOUNT}. \\ \hline
+\texttt{discountVal} & \texttt{DECIMAL(19,2)} & - & Có & 0.00 & Giá trị chiết khấu (\% hoặc số tiền). \\ \hline
+\texttt{minOrder} & \texttt{DECIMAL(19,2)} & - & Có & 0.00 & Giá trị đơn hàng tối thiểu để được áp dụng. \\ \hline
+\texttt{startDate} & \texttt{DATE} & - & Không & NULL & Ngày bắt đầu có hiệu lực. \\ \hline
+\texttt{endDate} & \texttt{DATE} & - & Không & NULL & Ngày kết thúc chương trình. \\ \hline
+\texttt{startTime} & \texttt{TIME} & - & Không & NULL & Giờ bắt đầu áp dụng trong ngày. \\ \hline
+\texttt{endTime} & \texttt{TIME} & - & Không & NULL & Giờ kết thúc áp dụng trong ngày. \\ \hline
+\texttt{daysOfWeek} & \texttt{VARCHAR(255)} & - & Không & NULL & Chuỗi các ngày áp dụng trong tuần. \\ \hline
+\texttt{buyVariantId} & \texttt{VARCHAR(255)} & - & Không & NULL & Mã biến thể mua điều kiện (BOGO). \\ \hline
+\texttt{getVariantId} & \texttt{VARCHAR(255)} & - & Không & NULL & Mã biến thể được tặng/giảm giá (BOGO). \\ \hline
+\texttt{usageLimit} & \texttt{INT} & - & Không & NULL & Giới hạn tối đa số lần sử dụng voucher. \\ \hline
+\texttt{timesUsed} & \texttt{INT} & - & Có & 0 & Số lần voucher đã được áp dụng thực tế. \\ \hline
+\texttt{isActive} & \texttt{TINYINT(1)} & - & Có & 1 & Trạng thái bật/tắt (1: Kích hoạt, 0: Tạm dừng). \\ \hline
+\end{tabularx}
+\end{table}
+
+% ------------------------------------------------------------------------------
+% 12. BẢNG TBL_ORDERS
+% ------------------------------------------------------------------------------
+\subsubsection{Bảng \texttt{tbl\_orders} (Hóa đơn bán hàng \& Thanh toán)}
+Lưu trữ hóa đơn tổng, giá trị thanh toán, phương thức và trạng thái cổng thanh toán (Bảng \ref{tab:tbl_orders}).
+
+\begin{table}[htbp]
+\centering
+\caption{Từ điển dữ liệu bảng \texttt{tbl\_orders}}
+\label{tab:tbl_orders}
+\vspace{2mm}
+\begin{tabularx}{\textwidth}{|p{2.5cm}|p{2.8cm}|c|c|p{1.8cm}|X|}
+\hline
+\textbf{Tên trường} & \textbf{Kiểu dữ liệu} & \textbf{Khóa} & \textbf{Not Null} & \textbf{Mặc định} & \textbf{Diễn giải nghiệp vụ} \\ \hline
+\texttt{id} & \texttt{BIGINT} & PK & Có & Auto Inc & Khóa chính, đồng thời là \texttt{orderCode} của PayOS. \\ \hline
+\texttt{order\_code} & \texttt{VARCHAR(255)} & UK & Có & Không & Mã hóa đơn chuỗi hiển thị (ORD + timestamp). \\ \hline
+\texttt{customerId} & \texttt{VARCHAR(255)} & - & Không & NULL & Mã khách hàng liên kết. \\ \hline
+\texttt{subtotal} & \texttt{DOUBLE} & - & Có & Không & Tổng tiền hàng trước chiết khấu và thuế. \\ \hline
+\texttt{discountAmt} & \texttt{DOUBLE} & - & Có & 0.0 & Số tiền được giảm từ chương trình khuyến mãi. \\ \hline
+\texttt{tax} & \texttt{DOUBLE} & - & Có & 0.0 & Thuế giá trị gia tăng VAT 10\%. \\ \hline
+\texttt{grandTotal} & \texttt{DOUBLE} & - & Có & Không & Tổng số tiền khách hàng thực tế phải trả. \\ \hline
+\texttt{paymentMethod}& \texttt{VARCHAR(20)} & - & Có & Không & Phương thức thanh toán: \texttt{CASH} hoặc \texttt{PAYOS}. \\ \hline
+\texttt{payStatus} & \texttt{VARCHAR(20)} & - & Có & PENDING & Trạng thái: PENDING, COMPLETED, CANCELLED. \\ \hline
+\texttt{payQrCode} & \texttt{TEXT} & - & Không & NULL & Chuỗi dữ liệu mã VietQR động từ PayOS. \\ \hline
+\texttt{createdAt} & \texttt{DATETIME(6)} & - & Có & CURRENT & Thời điểm xuất hóa đơn tại quầy. \\ \hline
+\end{tabularx}
+\end{table}
+
+% ------------------------------------------------------------------------------
+% 13. BẢNG TBL_ORDER_ITEMS
+% ------------------------------------------------------------------------------
+\subsubsection{Bảng \texttt{tbl\_order\_items} (Chi tiết mặt hàng trong hóa đơn)}
+Lưu vết từng dòng sản phẩm bán ra kèm cấu hình biến thể và tùy chọn tại thời điểm xuất hóa đơn (Bảng \ref{tab:tbl_order_items}).
+
+\begin{table}[htbp]
+\centering
+\caption{Từ điển dữ liệu bảng \texttt{tbl\_order\_items}}
+\label{tab:tbl_order_items}
+\vspace{2mm}
+\begin{tabularx}{\textwidth}{|p{2.5cm}|p{2.8cm}|c|c|p{1.8cm}|X|}
+\hline
+\textbf{Tên trường} & \textbf{Kiểu dữ liệu} & \textbf{Khóa} & \textbf{Not Null} & \textbf{Mặc định} & \textbf{Diễn giải nghiệp vụ} \\ \hline
+\texttt{id} & \texttt{BIGINT} & PK & Có & Auto Inc & Khóa chính định danh tự tăng. \\ \hline
+\texttt{itemId} & \texttt{VARCHAR(255)} & - & Có & Không & Mã sản phẩm cơ sở tại thời điểm bán. \\ \hline
+\texttt{variantId} & \texttt{VARCHAR(255)} & - & Không & NULL & Mã biến thể SKU vật lý xuất kho. \\ \hline
+\texttt{name} & \texttt{VARCHAR(255)} & - & Có & Không & Tên sản phẩm hiển thị trên bill. \\ \hline
+\texttt{basePrice} & \texttt{DOUBLE} & - & Có & Không & Giá gốc của biến thể thời điểm bán. \\ \hline
+\texttt{price} & \texttt{DOUBLE} & - & Có & Không & Đơn giá cuối cùng sau khi cộng phụ thu Modifier. \\ \hline
+\texttt{quantity} & \texttt{INT} & - & Có & Không & Số lượng sản phẩm bán ra. \\ \hline
+\texttt{modifiers} & \texttt{TEXT} & - & Không & NULL & Danh sách JSON các tùy chọn đã chọn. \\ \hline
+\texttt{order\_id} & \texttt{BIGINT} & FK & Có & Không & Khóa ngoại liên kết \texttt{tbl\_orders.id} (CASCADE). \\ \hline
+\end{tabularx}
+\end{table}
+
+% ------------------------------------------------------------------------------
+% 14. BẢNG TBL_ACTIVITY_LOGS
+% ------------------------------------------------------------------------------
+\subsubsection{Bảng \texttt{tbl\_activity\_logs} (Nhật ký kiểm toán an ninh Activity Logs)}
+Lưu trữ dấu vết kiểm toán toàn diện mọi hành vi làm biến đổi dữ liệu nghiệp vụ (Bảng \ref{tab:tbl_activity_logs}).
+
+\begin{table}[htbp]
+\centering
+\caption{Từ điển dữ liệu bảng \texttt{tbl\_activity\_logs}}
+\label{tab:tbl_activity_logs}
+\vspace{2mm}
+\begin{tabularx}{\textwidth}{|p{2.5cm}|p{2.8cm}|c|c|p{1.8cm}|X|}
+\hline
+\textbf{Tên trường} & \textbf{Kiểu dữ liệu} & \textbf{Khóa} & \textbf{Not Null} & \textbf{Mặc định} & \textbf{Diễn giải nghiệp vụ} \\ \hline
+\texttt{id} & \texttt{BIGINT} & PK & Có & Auto Inc & Khóa chính định danh tự tăng. \\ \hline
+\texttt{logId} & \texttt{VARCHAR(255)} & UK & Có & Không & Mã định danh bản ghi log (UUID). \\ \hline
+\texttt{userEmail} & \texttt{VARCHAR(255)} & Index & Có & Không & Email người thực hiện thao tác. \\ \hline
+\texttt{action} & \texttt{VARCHAR(50)} & Index & Có & Không & Hành vi: LOGIN, CREATE, UPDATE, DELETE, CANCEL. \\ \hline
+\texttt{entityType} & \texttt{VARCHAR(50)} & Index & Có & Không & Thực thể: USER, ITEM, CATEGORY, ORDER, PROMOTION... \\ \hline
+\texttt{entityId} & \texttt{VARCHAR(255)} & - & Không & NULL & Mã định danh của đối tượng bị tác động. \\ \hline
+\texttt{description} & \texttt{VARCHAR(1000)}& - & Không & NULL & Tóm tắt nội dung chi tiết thao tác thay đổi. \\ \hline
+\texttt{createdAt} & \texttt{DATETIME(6)} & Index & Có & CURRENT & Thời điểm chính xác phát sinh thao tác. \\ \hline
+\end{tabularx}
+\end{table}
+
+% ==============================================================================
+\section{Tổng kết chương 2}
+Chương 2 đã phân tích và mô hình hóa một cách khoa học, chuyên sâu toàn bộ bài toán nghiệp vụ của hệ thống POS bán lẻ. Thông qua hệ thống biểu đồ phân rã chức năng (BFD), mô hình Use Case tổng quát và 6 bảng đặc tả ca sử dụng chi tiết chuẩn quốc tế, các luồng tương tác giữa nhân viên thu ngân, quản trị viên và cổng thanh toán PayOS đã được định nghĩa minh bạch. Hệ thống các sơ đồ hoạt động (Activity Diagrams), tuần tự (Sequence Diagrams), sơ đồ lớp và sơ đồ triển khai phân tán đã phác họa rõ nét cách thức vận hành đồng bộ giữa các tầng kiến trúc. Đặc biệt, mô hình cơ sở dữ liệu quan hệ gồm 13 bảng chuẩn hóa và bộ Từ điển dữ liệu (Data Dictionary) chi tiết 100\% các thuộc tính, ràng buộc toàn vẹn và cơ chế kiểm toán đã tạo tiền đề kỹ thuật vững chắc để bước vào giai đoạn cài đặt, thực nghiệm và kiểm thử hệ thống trong Chương 3.
