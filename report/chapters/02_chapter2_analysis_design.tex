@@ -101,7 +101,7 @@ Hệ thống được phân rã thành 6 phân hệ chức năng chính, như tr
 \subsection{Biểu đồ phân rã chức năng (BFD - Business Function Diagram)}
 Biểu đồ phân rã chức năng (Hình \ref{fig:bfd_diagram}) mô tả cấu trúc phân cấp toàn bộ cây nghiệp vụ của hệ thống POS từ cấp hệ thống đến các mô-đun chức năng chi tiết.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \begin{minipage}{0.95\textwidth}
 \centering
@@ -131,7 +131,7 @@ Biểu đồ phân rã chức năng (Hình \ref{fig:bfd_diagram}) mô tả cấu
 \subsubsection{Biểu đồ Use Case tổng quát}
 Hệ thống bao gồm 2 tác nhân con người (\textit{Thu ngân} và \textit{Quản lý}) cùng 1 tác nhân hệ thống bên thứ ba (\textit{Cổng thanh toán PayOS}). Mối quan hệ giữa các tác nhân và các ca sử dụng tổng quát được minh họa tại Hình \ref{fig:usecase_overall}.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \begin{minipage}{0.95\textwidth}
 \centering
@@ -422,7 +422,7 @@ Dưới đây là các bảng đặc tả chuẩn học thuật cho 7 ca sử d�
 \subsubsection{Biểu đồ hoạt động: Quy trình Bán hàng và Thanh toán tại quầy}
 Biểu đồ hoạt động (Hình \ref{fig:activity_checkout}) mô tả tuần tự các bước xử lý nghiệp vụ từ lúc thu ngân chọn mặt hàng, hệ thống đánh giá khuyến mãi tối ưu, đến khi hoàn tất giao dịch thanh toán và trừ kho.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \begin{minipage}{0.9\textwidth}
 \centering
@@ -461,7 +461,7 @@ Biểu đồ hoạt động (Hình \ref{fig:activity_checkout}) mô tả tuần 
 \subsubsection{Biểu đồ hoạt động: Quy trình Kiểm kê và Cân bằng tồn kho}
 Biểu đồ hoạt động (Hình \ref{fig:activity_stockcheck}) mô tả quy trình kiểm kê định kỳ tại cửa hàng, tính toán sai lệch giữa số lượng thực tế và số liệu trên hệ thống, sau đó thực hiện ghi giao dịch điều chỉnh sổ cái (\texttt{ADJUSTMENT}).
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \begin{minipage}{0.9\textwidth}
 \centering
@@ -494,7 +494,7 @@ Biểu đồ hoạt động (Hình \ref{fig:activity_stockcheck}) mô tả quy t
 \subsubsection{Biểu đồ hoạt động: Quy trình Nhập kho hàng hóa}
 Biểu đồ hoạt động (Hình \ref{fig:activity_goods_receipt}) mô tả quy trình nhập kho hàng hóa mới từ nhà cung cấp hoặc bổ sung số lượng cho các biến thể SKU hiện có, ghi nhận giao dịch sổ cái loại \texttt{IN}.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \begin{minipage}{0.9\textwidth}
 \centering
@@ -529,7 +529,7 @@ Biểu đồ hoạt động (Hình \ref{fig:activity_goods_receipt}) mô tả qu
 \subsubsection{Biểu đồ tuần tự: Xác thực đăng nhập và Xoay vòng Token (ADR-0007)}
 Biểu đồ tuần tự (Hình \ref{fig:seq_auth}) đặc tả luồng tương tác giữa Trình duyệt (Client), Bộ lọc an ninh (JwtRequestFilter), Bộ điều khiển (AuthController), Dịch vụ làm mới mã (RefreshTokenService) và Cơ sở dữ liệu MySQL.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \begin{minipage}{0.95\textwidth}
 \centering
@@ -564,7 +564,7 @@ Biểu đồ tuần tự (Hình \ref{fig:seq_auth}) đặc tả luồng tương 
 \subsubsection{Biểu đồ tuần tự: Tạo đơn hàng và Trừ kho tức thời qua Sổ cái}
 Biểu đồ tuần tự (Hình \ref{fig:seq_order_create}) thể hiện quá trình phối hợp đồng bộ giữa tầng Front-end, tầng Service nghiệp vụ (\texttt{OrderServiceImpl}, \texttt{PromotionServiceImpl}, \texttt{InventoryServiceImpl}) và cơ sở dữ liệu MySQL khi thực hiện tạo đơn hàng và trừ kho.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \begin{minipage}{0.95\textwidth}
 \centering
@@ -594,7 +594,7 @@ Biểu đồ tuần tự (Hình \ref{fig:seq_order_create}) thể hiện quá tr
 \subsection{Biểu đồ lớp (Class Diagram)}
 Cấu trúc quan hệ giữa các lớp đối tượng thực thể (JPA Entities) và các lớp xử lý nghiệp vụ chính được mô tả chi tiết tại Hình \ref{fig:class_diagram}.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \begin{minipage}{0.95\textwidth}
 \centering
@@ -639,7 +639,7 @@ Cấu trúc quan hệ giữa các lớp đối tượng thực thể (JPA Entiti
 \subsection{Biểu đồ thành phần (Component Diagram)}
 Biểu đồ thành phần (Hình \ref{fig:component_diagram}) mô tả các thành phần phần mềm chính của hệ thống POS và mối quan hệ phụ thuộc giữa chúng theo kiến trúc 3 tầng (Presentation - Business Logic - Data Access):
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \begin{minipage}{0.95\textwidth}
 \centering
@@ -697,7 +697,7 @@ Các thành phần chính được phân tách theo nguyên tắc trách nhiệm
 \subsection{Biểu đồ triển khai (Deployment Diagram)}
 Kiến trúc phần cứng và các thành phần phần mềm triển khai trên môi trường thực tế được thiết kế theo mô hình phân tán nhiều tầng (Multi-tier Distributed Deployment Architecture), như trình bày tại Hình \ref{fig:deployment_diagram}:
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \begin{minipage}{0.95\textwidth}
 \centering

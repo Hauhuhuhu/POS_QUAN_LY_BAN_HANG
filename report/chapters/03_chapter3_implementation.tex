@@ -21,7 +21,7 @@ Hệ thống POS Quản lý bán hàng được thiết kế theo kiến trúc M
 
 \subsubsection{Cấu hình máy chủ Back-end (\texttt{application.properties})}
 Đoạn trích cấu hình trung tâm của Spring Boot tại tệp \texttt{billingsoftware/src/main/resources/application.properties}:
-\begin{lstlisting}[language=bash, caption={Cấu hình thông số hệ thống trong application.properties}]
+\begin{lstlisting}[language=sh, caption={Cấu hình thông số hệ thống trong application.properties}]
 spring.application.name=billingsoftware
 server.servlet.context-path=/api/v1.0
 
@@ -56,7 +56,7 @@ payos.checksum.key=${PAYOS_CHECKSUM}
 
 \subsubsection{Cấu hình giao diện Front-end (\texttt{.env})}
 Tại thư mục \texttt{Front-end/}, tệp cấu hình \texttt{.env} thiết lập đường dẫn gốc tới máy chủ API:
-\begin{lstlisting}[language=bash, caption={Cấu hình biến môi trường Front-end}]
+\begin{lstlisting}[language=sh, caption={Cấu hình biến môi trường Front-end}]
 VITE_API_BASE_URL=http://localhost:8080/api/v1.0
 \end{lstlisting}
 
@@ -83,7 +83,7 @@ Hệ thống yêu cầu tất cả người dùng (Quản trị viên và Nhân 
     \item Tự động điều hướng người dùng tới giao diện bán hàng (\texttt{/explore}) hoặc bảng điều khiển quản trị (\texttt{/dashboard}) tùy theo vai trò quyền hạn (\texttt{ROLE\_ADMIN} hoặc \texttt{ROLE\_STAFF}).
 \end{itemize}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \IfFileExists{images/ui_login.png}{
     \includegraphics[width=0.75\textwidth]{images/ui_login.png}
@@ -105,7 +105,7 @@ Màn hình Bán hàng nhanh (đường dẫn \texttt{/explore}) là giao diện 
     \item \textbf{Thanh tìm kiếm thông minh (\texttt{SearchBox}):} Tích hợp hook tùy biến \texttt{useDebounce} (độ trễ $300$ms), hỗ trợ tìm kiếm sản phẩm theo tên hoặc quét trực tiếp mã vạch SKU bằng máy quét cầm tay.
 \end{itemize}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \IfFileExists{images/ui_pos_explore.png}{
     \includegraphics[width=0.92\textwidth]{images/ui_pos_explore.png}
@@ -127,7 +127,7 @@ Khi thu ngân nhấp chọn một mặt hàng có cấu hình phân loại phứ
     \item Nhấn nút ''Thêm vào giỏ hàng'', sản phẩm được đưa vào giỏ với mã định danh kết hợp duy nhất: \texttt{\$\{itemId\}\_\$\{variantId\}\_\$\{modifierIds\}}.
 \end{itemize}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \IfFileExists{images/ui_pos_modal.png}{
     \includegraphics[width=0.88\textwidth]{images/ui_pos_modal.png}
@@ -161,7 +161,7 @@ Thu ngân có thể lựa chọn 1 trong 2 phương thức thanh toán linh ho�
     \end{itemize}
 \end{enumerate}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \IfFileExists{images/ui_payment_qr.png}{
     \includegraphics[width=0.88\textwidth]{images/ui_payment_qr.png}
@@ -184,7 +184,7 @@ Cửa sổ \texttt{ReceiptPopup} (Hình \ref{fig:ui_receipt}) được thiết k
     \item Tích hợp lệnh gọi in trực tiếp trình duyệt (\texttt{window.print()}) với định dạng \texttt{@media print} tối ưu độ sắc nét cho đầu in nhiệt.
 \end{itemize}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \IfFileExists{images/ui_receipt.png}{
     \includegraphics[width=0.85\textwidth]{images/ui_receipt.png}
@@ -206,7 +206,7 @@ Màn hình Lịch sử đơn hàng (\texttt{OrderHistory} - Hình \ref{fig:ui_or
     \item \textbf{Cơ chế bảo vệ kế toán nghiêm ngặt:} Đơn hàng đã \texttt{COMPLETED} không có nút xóa nhằm chống gian lận doanh số. Nút ''Hủy đơn'' chỉ xuất hiện đối với đơn hàng đang \texttt{PENDING}. Khi xác nhận hủy, hệ thống kích hoạt giao dịch bù trừ kho (Stock In) và hoàn lại số lượt dùng voucher khuyến mãi.
 \end{itemize}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \IfFileExists{images/ui_order_history.png}{
     \includegraphics[width=0.92\textwidth]{images/ui_order_history.png}
@@ -236,7 +236,7 @@ Trang chủ Quản trị (\texttt{/dashboard} - Hình \ref{fig:ui_dashboard}) cu
     \item \textbf{Cảnh báo tồn kho thấp (Low Stock Alert):} Liệt kê các biến thể có số dư \texttt{cachedStockQuantity} dưới ngưỡng cảnh báo, giúp quản lý chủ động lên kế hoạch nhập hàng kịp thời.
 \end{itemize}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \IfFileExists{images/ui_dashboard.png}{
     \includegraphics[width=0.92\textwidth]{images/ui_dashboard.png}
@@ -258,7 +258,7 @@ Giao diện Quản trị Danh mục (\texttt{/categories} - Hình \ref{fig:ui_ma
     \item Ràng buộc toàn vẹn: Không cho phép xóa danh mục khi đang có sản phẩm con liên kết (\texttt{ON DELETE RESTRICT}).
 \end{itemize}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \IfFileExists{images/ui_manage_categories.png}{
     \includegraphics[width=0.92\textwidth]{images/ui_manage_categories.png}
@@ -280,7 +280,7 @@ Trang Quản lý Sản phẩm (\texttt{/items} - Hình \ref{fig:ui_manage_items}
     \item Gán các nhóm tùy chọn Modifier vào từng sản phẩm tương ứng.
 \end{itemize}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \IfFileExists{images/ui_manage_items.png}{
     \includegraphics[width=0.92\textwidth]{images/ui_manage_items.png}
@@ -302,7 +302,7 @@ Giao diện Quản lý Nhóm tùy chọn (\texttt{/modifiers} - Hình \ref{fig:u
     \item Danh sách các tùy chọn chi tiết bên trong nhóm kèm mức điều chỉnh giá (\texttt{priceAdjustment}).
 \end{itemize}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \IfFileExists{images/ui_manage_modifiers.png}{
     \includegraphics[width=0.92\textwidth]{images/ui_manage_modifiers.png}
@@ -325,7 +325,7 @@ Cửa sổ \texttt{StockOperationModal} (Hình \ref{fig:ui_stock_operation}) cun
     \item \textbf{Xem sổ cái giao dịch:} Liệt kê toàn bộ lịch sử biến động kho theo dòng thời gian.
 \end{itemize}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \IfFileExists{images/ui_stock_operation.png}{
     \includegraphics[width=0.92\textwidth]{images/ui_stock_operation.png}
@@ -348,7 +348,7 @@ Các màn hình quản trị bổ trợ gồm:
     \item \textbf{Nhật ký Kiểm toán Hoạt động (\texttt{/activity-logs} - Hình \ref{fig:ui_activity_logs}):} Tra cứu và lọc lịch sử thao tác của các tài khoản trong hệ thống phục vụ công tác đối soát an ninh.
 \end{itemize}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \IfFileExists{images/ui_manage_promotions.png}{
     \includegraphics[width=0.92\textwidth]{images/ui_manage_promotions.png}
@@ -362,7 +362,7 @@ Các màn hình quản trị bổ trợ gồm:
 \label{fig:ui_manage_promotions}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \IfFileExists{images/ui_manage_customers.png}{
     \includegraphics[width=0.92\textwidth]{images/ui_manage_customers.png}
@@ -376,7 +376,7 @@ Các màn hình quản trị bổ trợ gồm:
 \label{fig:ui_manage_customers}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \IfFileExists{images/ui_manage_users.png}{
     \includegraphics[width=0.92\textwidth]{images/ui_manage_users.png}
@@ -390,7 +390,7 @@ Các màn hình quản trị bổ trợ gồm:
 \label{fig:ui_manage_users}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \IfFileExists{images/ui_activity_logs.png}{
     \includegraphics[width=0.92\textwidth]{images/ui_activity_logs.png}

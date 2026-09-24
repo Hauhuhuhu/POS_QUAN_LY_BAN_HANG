@@ -13,12 +13,15 @@
 % Hỗ trợ Font tiếng Việt chuẩn Unicode cho XeLaTeX
 \usepackage{fontspec}
 \setmainfont{Times New Roman}
-
+\setmonofont{Courier New}
 
 % ==============================================================================
 % CÁC GÓI LỆNH ĐỒ HỌA, BẢNG BIỂU & CODE LISTING
 % ==============================================================================
 \usepackage{graphicx}
+\usepackage{float}        % Định vị hình ảnh chính xác với [H] (ngăn lỗi Too many unprocessed floats)
+\usepackage{extrafloats}  % Mở rộng bộ nhớ đệm chứa float lên 1000 phần tử
+\usepackage{placeins}     % Chặn float tràn qua các chương khác (\FloatBarrier)
 \usepackage{xcolor}
 \usepackage{booktabs}
 \usepackage{tabularx}
