@@ -13,13 +13,20 @@ dist/
 *.swp
 *.log
 
-# AI Agents & Unrelated Files
+# AI Agents & Temporary Files
 .agents/
 .claude/
+skills/
 .scratch/
+.docx-work/
+.autohand/
+skills-lock.json
+*.zip
+
+# Documentation & Others
 docs/
+report/
 AGENTS.md
 CONTEXT.md
 ORIGINAL_REQUEST.md
-skills-lock.json
-billingsoftware.zip
+bocucBTL.md
