@@ -10,6 +10,7 @@ import {
   usePromotionEvaluation,
   formatCartItems,
 } from "../Promotions/usePromotionEvaluation";
+import { useCartCalculations } from "./useCartCalculations";
 import { getPromotionErrorMessage } from "../../utils/promotionErrorMessages";
 import { Tag, Banknote, CreditCard, X } from "lucide-react";
 
@@ -32,11 +33,6 @@ function CartSummary({
   const [appliedCoupon, setAppliedCoupon] = useState("");
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
 
-  const rawTotal = (cartItems || []).reduce(
-    (total, item) =>
-      total + (item.price || item.basePrice || 0) * item.quantity,
-    0,
-  );
 
   const {
     evaluation,
@@ -93,12 +89,12 @@ function CartSummary({
     toast.success("Đã gỡ mã giảm giá");
   };
 
-  // Direct arithmetic expressions per Vercel Best Practices rerender-simple-expression-in-memo
-  const hasCartItems = Boolean(cartItems && cartItems.length > 0);
-  const subtotal = !hasCartItems ? 0 : (evaluation ? evaluation.subtotal : rawTotal);
-  const discountAmount = !hasCartItems ? 0 : (evaluation ? evaluation.discountAmount : 0);
-  const tax = !hasCartItems ? 0 : (evaluation ? evaluation.tax : rawTotal * 0.1);
-  const grandTotal = !hasCartItems ? 0 : (evaluation ? evaluation.grandTotal : rawTotal + tax);
+  const {
+    subtotal,
+    discountAmount,
+    tax,
+    grandTotal,
+  } = useCartCalculations(cartItems, evaluation);
 
   const activeEvaluation = evaluation;
 

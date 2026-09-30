@@ -37,6 +37,10 @@ function DisplayItem({ addToCart, item }) {
           <img
             src={item.imgUrl || "https://placehold.co/60x60?text=MH"}
             alt={item.name}
+            loading="lazy"
+            decoding="async"
+            width={48}
+            height={48}
             className="w-12 h-12 rounded-lg object-cover border border-slate-200 bg-slate-50 flex-shrink-0"
           />
           <div className="min-w-0">

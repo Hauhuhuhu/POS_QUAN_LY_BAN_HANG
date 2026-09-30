@@ -142,6 +142,10 @@ export default function EditCategoryModal({ isOpen, onClose, category }) {
                 <img
                   src={previewUrl}
                   alt="preview"
+                  loading="lazy"
+                  decoding="async"
+                  width={64}
+                  height={64}
                   className="w-16 h-16 rounded-lg object-cover shadow-xs border border-slate-200 bg-white"
                 />
                 <div className="flex items-center gap-1 text-xs text-slate-500 mt-1">
