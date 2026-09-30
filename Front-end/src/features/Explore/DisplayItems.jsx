@@ -1,4 +1,4 @@
-import { useState, useMemo, memo } from "react";
+import { useState, useMemo, useDeferredValue, memo } from "react";
 import Spinner from "../../ui/Spinner";
 import { useItems } from "../Items/useItems";
 import DisplayItem from "./DisplayItem";
@@ -8,10 +8,12 @@ import { PackageOpen } from "lucide-react";
 function DisplayItems({ addToCart, selectedCategory }) {
   const { items, isLoading } = useItems();
   const [searchText, setSearchText] = useState("");
+  const deferredSearchText = useDeferredValue(searchText);
+  const isStale = searchText !== deferredSearchText;
 
   const filteredItems = useMemo(() => {
     if (!items) return [];
-    const searchLower = searchText.trim().toLowerCase();
+    const searchLower = deferredSearchText.trim().toLowerCase();
 
     return items.filter((item) => {
       const matchesCategory = !selectedCategory || String(item.categoryId) === String(selectedCategory);
@@ -19,7 +21,7 @@ function DisplayItems({ addToCart, selectedCategory }) {
 
       return !searchLower || item.name.toLowerCase().includes(searchLower);
     });
-  }, [items, selectedCategory, searchText]);
+  }, [items, selectedCategory, deferredSearchText]);
 
   if (isLoading) {
     return (
@@ -44,7 +46,7 @@ function DisplayItems({ addToCart, selectedCategory }) {
           <p className="text-sm">Không tìm thấy mặt hàng</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+        <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 transition-opacity duration-150 ${isStale ? "opacity-70" : "opacity-100"}`}>
           {filteredItems?.map((item, index) => (
             <DisplayItem key={item.itemId || index} addToCart={addToCart} item={item} />
           ))}
