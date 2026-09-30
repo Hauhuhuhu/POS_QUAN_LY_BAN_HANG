@@ -1,7 +1,6 @@
+import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { AlertTriangle, Loader2, Trash2, X } from "lucide-react";
-import { useLockBodyScroll } from "../hooks/useLockBodyScroll";
-import { useEscapeKey } from "../hooks/useEscapeKey";
 
 /**
  * Reusable Confirmation Modal for Destructive (Delete) Actions.
@@ -21,14 +20,30 @@ function ConfirmDeleteModal({
   cancelText = "Hủy",
 }) {
   // Prevent background body scrolling while modal is open
-  useLockBodyScroll(isOpen);
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isOpen]);
 
   // Handle ESC key to dismiss modal when not loading
-  useEscapeKey(() => {
-    if (!isLoading) {
-      onClose();
-    }
-  }, isOpen);
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape" && !isLoading) {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, isLoading, onClose]);
 
   if (!isOpen) return null;
 

@@ -16,7 +16,7 @@ export function useEscapeKey(handler, isEnabled = true) {
   });
 
   useEffect(() => {
-    if (!isEnabled || typeof window === "undefined") return;
+    if (!isEnabled) return;
 
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {

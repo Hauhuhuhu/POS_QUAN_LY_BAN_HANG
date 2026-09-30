@@ -14,6 +14,7 @@ test("keeps the access token and session in memory", () => {
     token: "access-token",
     email: "cashier@example.com",
     role: "ROLE_USER",
+    name: "Cashier",
   });
 
   assert.equal(getAccessToken(), "access-token");
@@ -22,11 +23,12 @@ test("keeps the access token and session in memory", () => {
     token: "access-token",
     email: "cashier@example.com",
     role: "ROLE_USER",
+    name: "Cashier",
   });
 });
 
 test("clears the in-memory session", () => {
-  setSession({ token: "access-token", email: "cashier@example.com", role: "ROLE_USER" });
+  setSession({ token: "access-token", email: "cashier@example.com", role: "ROLE_USER", name: "Cashier" });
 
   clearSession();
 
