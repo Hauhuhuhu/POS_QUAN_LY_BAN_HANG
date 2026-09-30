@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
 import { X, Edit3, Image as ImageIcon, Loader2 } from "lucide-react";
 import { useUpdateCategory } from "./useUpdateCategory";
+import { useLockBodyScroll } from "../../hooks/useLockBodyScroll";
+import { useEscapeKey } from "../../hooks/useEscapeKey";
 
 const DEFAULT_PREVIEW = "https://placehold.co/60x60?text=Upload";
 
@@ -25,6 +27,20 @@ export default function EditCategoryModal({ isOpen, onClose, category }) {
     () => category?.imgUrl || DEFAULT_PREVIEW
   );
 
+  useLockBodyScroll(isOpen);
+  useEscapeKey(() => {
+    if (!isUpdating) onClose();
+  }, isOpen);
+
+  const formValues = useMemo(() => {
+    if (!category) return undefined;
+    return {
+      name: category.name || "",
+      description: category.description || "",
+      bgColor: category.bgColor || "#2563EB",
+    };
+  }, [category]);
+
   const {
     register,
     control,
@@ -32,11 +48,7 @@ export default function EditCategoryModal({ isOpen, onClose, category }) {
     setValue,
     formState: { errors },
   } = useForm({
-    defaultValues: {
-      name: category?.name || "",
-      description: category?.description || "",
-      bgColor: category?.bgColor || "#2563EB",
-    },
+    values: formValues,
   });
 
   const selectedColor = useWatch({
@@ -44,26 +56,6 @@ export default function EditCategoryModal({ isOpen, onClose, category }) {
     name: "bgColor",
     defaultValue: category?.bgColor || "#2563EB",
   });
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev;
-    };
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const handleKey = (e) => {
-      if (e.key === "Escape" && !isUpdating) {
-        onClose();
-      }
-    };
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [isOpen, isUpdating, onClose]);
 
   if (!isOpen || !category) return null;
 

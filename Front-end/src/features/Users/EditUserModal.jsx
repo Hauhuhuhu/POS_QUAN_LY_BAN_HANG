@@ -1,49 +1,36 @@
-import { useEffect } from "react";
+import { useMemo } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { X, Edit3, Loader2, Shield, Key } from "lucide-react";
 import { useUpdateUser } from "./useUpdateUser";
+import { useLockBodyScroll } from "../../hooks/useLockBodyScroll";
+import { useEscapeKey } from "../../hooks/useEscapeKey";
 
 export default function EditUserModal({ isOpen, onClose, user }) {
   const { isUpdating, updateUser } = useUpdateUser();
 
+  useLockBodyScroll(isOpen);
+  useEscapeKey(() => {
+    if (!isUpdating) onClose();
+  }, isOpen);
+
+  const formValues = useMemo(() => {
+    if (!user) return undefined;
+    return {
+      name: user.name || "",
+      email: user.email || "",
+      role: user.role || "ROLE_USER",
+      password: "",
+    };
+  }, [user]);
+
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
-  } = useForm();
-
-  useEffect(() => {
-    if (isOpen && user) {
-      reset({
-        name: user.name || "",
-        email: user.email || "",
-        role: user.role || "ROLE_USER",
-        password: "",
-      });
-    }
-  }, [isOpen, user, reset]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev;
-    };
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const handleKey = (e) => {
-      if (e.key === "Escape" && !isUpdating) {
-        onClose();
-      }
-    };
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [isOpen, isUpdating, onClose]);
+  } = useForm({
+    values: formValues,
+  });
 
   if (!isOpen || !user) return null;
 

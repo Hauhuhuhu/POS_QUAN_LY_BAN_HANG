@@ -16,7 +16,7 @@ export function setSession(authResponse) {
         token: accessToken,
         email: authResponse.email,
         role: authResponse.role,
-        name: authResponse.name || null,
+        ...(authResponse.name !== undefined ? { name: authResponse.name } : {}),
       }
     : null;
   return session;
