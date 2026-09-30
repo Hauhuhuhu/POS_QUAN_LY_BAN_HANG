@@ -15,6 +15,10 @@ function CategoryListItem({ category, onEdit, onDelete }) {
         <img
           src={category.imgUrl || "https://placehold.co/60x60?text=Cat"}
           alt={category.name}
+          loading="lazy"
+          decoding="async"
+          width={48}
+          height={48}
           className="w-12 h-12 rounded-lg object-cover border border-slate-200/80 bg-white"
         />
         <div>

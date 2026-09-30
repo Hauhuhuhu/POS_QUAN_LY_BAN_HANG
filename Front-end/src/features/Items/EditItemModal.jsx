@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -6,6 +6,8 @@ import { useUpdateItem } from "./useUpdateItem";
 import { useCategories } from "../Category/useCategories";
 import { useModifierGroups } from "../Modifiers/useModifierGroups";
 import { createDefaultVariant } from "../../utils/variantDefaults";
+import { useLockBodyScroll } from "../../hooks/useLockBodyScroll";
+import { useEscapeKey } from "../../hooks/useEscapeKey";
 import {
   X,
   Edit3,
@@ -86,17 +88,34 @@ export default function EditItemModal({ isOpen, onClose, item }) {
     () => (item?.modifierGroups || []).map((g) => g.groupId)
   );
 
-  const initialHasVariants = Boolean(item?.variants && item.variants.length > 0);
-  const initialVariants = initialHasVariants
-    ? item.variants.map((v) => ({
-        sku: v.sku || "",
-        basePrice: v.basePrice !== undefined ? String(v.basePrice) : "",
-        attributes: Object.entries(v.attributes || {}).map(([key, value]) => ({
-          key,
-          value,
-        })),
-      }))
-    : [createDefaultVariant()];
+  useLockBodyScroll(isOpen);
+  useEscapeKey(() => {
+    if (!isUpdating) onClose();
+  }, isOpen);
+
+  const formValues = useMemo(() => {
+    if (!item) return undefined;
+    const hasVariants = Boolean(item.variants && item.variants.length > 0);
+    const variants = hasVariants
+      ? item.variants.map((v) => ({
+          sku: v.sku || "",
+          basePrice: v.basePrice !== undefined ? String(v.basePrice) : "",
+          attributes: Object.entries(v.attributes || {}).map(([key, value]) => ({
+            key,
+            value,
+          })),
+        }))
+      : [createDefaultVariant()];
+
+    return {
+      name: item.name || "",
+      description: item.description || "",
+      price: item.price !== undefined ? String(item.price) : "",
+      categoryId: item.categoryId || "",
+      hasVariants,
+      variants,
+    };
+  }, [item]);
 
   const {
     register,
@@ -104,14 +123,7 @@ export default function EditItemModal({ isOpen, onClose, item }) {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    defaultValues: {
-      name: item?.name || "",
-      description: item?.description || "",
-      price: item?.price !== undefined ? String(item.price) : "",
-      categoryId: item?.categoryId || "",
-      hasVariants: initialHasVariants,
-      variants: initialVariants,
-    },
+    values: formValues,
   });
 
   const hasVariants = useWatch({ control, name: "hasVariants" });
@@ -124,26 +136,6 @@ export default function EditItemModal({ isOpen, onClose, item }) {
     control,
     name: "variants",
   });
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev;
-    };
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const handleKey = (e) => {
-      if (e.key === "Escape" && !isUpdating) {
-        onClose();
-      }
-    };
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [isOpen, isUpdating, onClose]);
 
   if (!isOpen || !item) return null;
 
@@ -309,6 +301,10 @@ export default function EditItemModal({ isOpen, onClose, item }) {
                 <img
                   src={previewUrl}
                   alt="preview"
+                  loading="lazy"
+                  decoding="async"
+                  width={64}
+                  height={64}
                   className="w-16 h-16 rounded-lg object-cover shadow-xs border border-slate-200 bg-white"
                 />
                 <div className="flex items-center gap-1 text-xs text-slate-500 mt-1">

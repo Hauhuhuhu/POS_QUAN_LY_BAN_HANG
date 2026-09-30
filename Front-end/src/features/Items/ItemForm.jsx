@@ -262,6 +262,10 @@ function ItemForm() {
                 <img
                   src={previewUrl}
                   alt="preview"
+                  loading="lazy"
+                  decoding="async"
+                  width={64}
+                  height={64}
                   className="w-16 h-16 rounded-lg object-cover shadow-xs border border-slate-200"
                 />
               ) : (

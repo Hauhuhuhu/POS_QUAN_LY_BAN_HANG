@@ -16,6 +16,10 @@ function Item({ item, onEdit, onDelete }) {
         <img
           src={item.imgUrl || "https://placehold.co/60x60?text=MH"}
           alt={item.name}
+          loading="lazy"
+          decoding="async"
+          width={56}
+          height={56}
           className="w-14 h-14 rounded-lg object-cover border border-slate-200 bg-slate-50 flex-shrink-0"
         />
 

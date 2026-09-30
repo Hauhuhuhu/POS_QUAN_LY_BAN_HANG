@@ -12,13 +12,11 @@ function PaymentQRCode({ orderData, onCancelSuccess, onSwitchToCashSuccess }) {
   const orderId = rawOrder?.orderId;
   const [isConfirmCancelOpen, setIsConfirmCancelOpen] = useState(false);
 
-  // 1. Trích xuất dữ liệu từ cache kết hợp dữ liệu gốc
-  const cachedData = queryClient.getQueryData(["order", orderId]);
-  const baseData = cachedData?.data || cachedData || rawOrder;
-  const { polledOrderData } = usePolledOrderData(baseData, orderId);
+  // 1. Đăng ký nhận dữ liệu phản ứng qua React Query (loại bỏ getQueryData tĩnh trong render)
+  const { polledOrderData } = usePolledOrderData(rawOrder, orderId);
 
   // 2. Hợp nhất dữ liệu mới nhất để render giao diện
-  const currentData = polledOrderData?.data || polledOrderData || baseData;
+  const currentData = polledOrderData?.data || polledOrderData || rawOrder;
   const isFinalCompleted = currentData?.paymentDetails?.status === "COMPLETED";
 
   // 3. Sử dụng custom hook tập trung cho vòng đời đơn hàng

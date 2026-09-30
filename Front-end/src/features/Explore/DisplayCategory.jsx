@@ -13,6 +13,10 @@ function DisplayCategory({ category, isSelected, onClick }) {
       <img
         src={category.imgUrl || "https://placehold.co/40x40?text=DM"}
         alt={category.name}
+        loading="lazy"
+        decoding="async"
+        width={40}
+        height={40}
         className="w-10 h-10 rounded-lg object-cover border border-slate-200/80 flex-shrink-0"
       />
       <div className="min-w-0 pr-1">

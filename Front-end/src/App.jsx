@@ -9,10 +9,10 @@ import AdminRoute from "./features/Auth/AdminRoute";
 import RouteLoading from "./ui/RouteLoading";
 import { queryClient } from "./utils/queryClient";
 
-import Dashboard from "./pages/Dashboard";
-import Explore from "./pages/Explore/Explore";
 import Login from "./pages/Login";
 
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Explore = lazy(() => import("./pages/Explore/Explore"));
 const ManageItems = lazy(() => import("./pages/ManageItems"));
 const ManageCategory = lazy(() => import("./pages/ManageCategory"));
 const ManageModifiers = lazy(() => import("./pages/ManageModifiers"));
