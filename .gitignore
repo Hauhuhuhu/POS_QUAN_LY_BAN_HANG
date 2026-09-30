@@ -12,3 +12,14 @@ dist/
 .vscode/
 *.swp
 *.log
+
+# AI Agents & Unrelated Files
+.agents/
+.claude/
+.scratch/
+docs/
+AGENTS.md
+CONTEXT.md
+ORIGINAL_REQUEST.md
+skills-lock.json
+billingsoftware.zip
