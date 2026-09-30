@@ -1,0 +1,171 @@
+{
+  "input": "E:\\Learn JavaSpringBoot with ReactJs\\Billing-app\\Bao-cao-BTL-POS-Quan-ly-ban-hang.docx",
+  "fonts_by_char_count": {
+    "Times New Roman": 5333,
+    "Consolas": 1348
+  },
+  "direct_run_formatting_runs": 292,
+  "direct_paragraph_formatting_paragraphs": 210,
+  "heading_like_paragraphs_not_heading_style": [
+    {
+      "para_index": 10,
+      "text": "X\u00c2Y D\u1ef0NG WEBSITE POS QU\u1ea2N L\u00dd B\u00c1N H\u00c0NG",
+      "style": "Normal"
+    },
+    {
+      "para_index": 65,
+      "text": "B\u1ea3ng 1. C\u00f4ng ngh\u1ec7 s\u1eed d\u1ee5ng",
+      "style": "Caption"
+    },
+    {
+      "para_index": 68,
+      "text": "H\u00ecnh 1. Ki\u1ebfn tr\u00fac logic c\u1ee7a h\u1ec7 th\u1ed1ng Billing-app",
+      "style": "Caption"
+    },
+    {
+      "para_index": 82,
+      "text": "B\u1ea3ng 2. Nh\u00f3m ng\u01b0\u1eddi d\u00f9ng v\u00e0 quy\u1ec1n h\u1ea1n",
+      "style": "Caption"
+    },
+    {
+      "para_index": 85,
+      "text": "B\u1ea3ng 3. C\u00e1c nh\u00f3m ch\u1ee9c n\u0103ng nghi\u1ec7p v\u1ee5",
+      "style": "Caption"
+    },
+    {
+      "para_index": 88,
+      "text": "H\u00ecnh 2. Lu\u1ed3ng x\u00e1c th\u1ef1c v\u00e0 l\u00e0m m\u1edbi access token",
+      "style": "Caption"
+    },
+    {
+      "para_index": 92,
+      "text": "H\u00ecnh 3. Lu\u1ed3ng t\u1ea1o \u0111\u01a1n h\u00e0ng v\u00e0 thanh to\u00e1n",
+      "style": "Caption"
+    },
+    {
+      "para_index": 96,
+      "text": "H\u00ecnh 4. Lu\u1ed3ng b\u00f9 tr\u1eeb khi h\u1ee7y ho\u1eb7c x\u00f3a \u0111\u01a1n PENDING",
+      "style": "Caption"
+    },
+    {
+      "para_index": 99,
+      "text": "H\u00ecnh 5. M\u00f4 h\u00ecnh d\u1eef li\u1ec7u kh\u00e1i qu\u00e1t",
+      "style": "Caption"
+    },
+    {
+      "para_index": 101,
+      "text": "B\u1ea3ng 4. C\u00e1c th\u1ef1c th\u1ec3 d\u1eef li\u1ec7u ch\u00ednh",
+      "style": "Caption"
+    },
+    {
+      "para_index": 112,
+      "text": "B\u1ea3ng 5. C\u00e1c endpoint ti\u00eau bi\u1ec3u",
+      "style": "Caption"
+    },
+    {
+      "para_index": 122,
+      "text": "B\u1ea3ng 6. K\u1ebft qu\u1ea3 ki\u1ec3m th\u1eed v\u00e0 build",
+      "style": "Caption"
+    },
+    {
+      "para_index": 126,
+      "text": "B\u1ea3ng 7. R\u1ee7i ro v\u00e0 h\u01b0\u1edbng kh\u1eafc ph\u1ee5c",
+      "style": "Caption"
+    },
+    {
+      "para_index": 153,
+      "text": "M\u00f4n h\u1ecdc",
+      "style": "Normal"
+    },
+    {
+      "para_index": 155,
+      "text": "Gi\u1ea3ng vi\u00ean",
+      "style": "Normal"
+    },
+    {
+      "para_index": 157,
+      "text": "Sinh vi\u00ean",
+      "style": "Normal"
+    },
+    {
+      "para_index": 159,
+      "text": "M\u00e3 sinh vi\u00ean",
+      "style": "Normal"
+    },
+    {
+      "para_index": 161,
+      "text": "L\u1edbp / Nh\u00f3m",
+      "style": "Normal"
+    },
+    {
+      "para_index": 163,
+      "text": "STT",
+      "style": "Normal"
+    },
+    {
+      "para_index": 164,
+      "text": "Vi\u1ebft t\u1eaft",
+      "style": "Normal"
+    }
+  ],
+  "examples": {
+    "direct_run_formatting": [
+      {
+        "para_index": 4,
+        "run_text": "TR\u01af\u1edcNG \u0110\u1ea0I H\u1eccC ................................................",
+        "style": "Normal"
+      },
+      {
+        "para_index": 5,
+        "run_text": "KHOA / B\u1ed8 M\u00d4N ................................................",
+        "style": "Normal"
+      },
+      {
+        "para_index": 10,
+        "run_text": "X\u00c2Y D\u1ef0NG WEBSITE POS QU\u1ea2N L\u00dd B\u00c1N H\u00c0NG",
+        "style": "Normal"
+      },
+      {
+        "para_index": 18,
+        "run_text": "Th\u00e0nh ph\u1ed1 H\u1ed3 Ch\u00ed Minh, n\u0103m 2026",
+        "style": "Normal"
+      },
+      {
+        "para_index": 65,
+        "run_text": "B\u1ea3ng 1. C\u00f4ng ngh\u1ec7 s\u1eed d\u1ee5ng",
+        "style": "Caption"
+      }
+    ],
+    "direct_paragraph_formatting": [
+      {
+        "para_index": 37,
+        "text": "",
+        "style": "Normal"
+      },
+      {
+        "para_index": 57,
+        "text": "",
+        "style": "Normal"
+      },
+      {
+        "para_index": 64,
+        "text": "",
+        "style": "Normal"
+      },
+      {
+        "para_index": 67,
+        "text": "Ng\u01b0\u1eddi d\u00f9ng\n    |\n    v\nReact/Vite Front-end\n    | Axios + JSON + Bearer access token\n    v\nSpring Boot REST API /api/v1.",
+        "style": "Normal"
+      },
+      {
+        "para_index": 81,
+        "text": "",
+        "style": "Normal"
+      }
+    ]
+  },
+  "notes": [
+    "Direct formatting is not always wrong, but it often causes inconsistent output when templates change.",
+    "Heading-like paragraphs not using Heading styles can break TOC and accessibility."
+  ]
+}

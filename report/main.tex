@@ -14,10 +14,16 @@
 \usepackage{iftex}
 \ifXeTeX
   \usepackage{fontspec}
-  \setmainfont{Times New Roman}
+  % Overleaf and TeX containers do not always include the proprietary font.
+  \IfFontExistsTF{Times New Roman}
+    {\setmainfont{Times New Roman}}
+    {\setmainfont{TeX Gyre Termes}}
 \else\ifLuaTeX
   \usepackage{fontspec}
-  \setmainfont{Times New Roman}
+  % Keep the same portable Times-style fallback under LuaLaTeX.
+  \IfFontExistsTF{Times New Roman}
+    {\setmainfont{Times New Roman}}
+    {\setmainfont{TeX Gyre Termes}}
 \else
   \usepackage[utf8]{inputenc}
   \usepackage[T5]{fontenc}
