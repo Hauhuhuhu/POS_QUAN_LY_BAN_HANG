@@ -12,3 +12,13 @@ dist/
 .vscode/
 *.swp
 *.log
+
+# AI Agents & Temporary Files
+.agents/
+.claude/
+skills/
+.scratch/
+.docx-work/
+.autohand/
+skills-lock.json
+*.zip
