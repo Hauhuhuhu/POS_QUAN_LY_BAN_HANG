@@ -22,3 +22,11 @@ skills/
 .autohand/
 skills-lock.json
 *.zip
+
+# Documentation & Others
+docs/
+report/
+AGENTS.md
+CONTEXT.md
+ORIGINAL_REQUEST.md
+bocucBTL.md
